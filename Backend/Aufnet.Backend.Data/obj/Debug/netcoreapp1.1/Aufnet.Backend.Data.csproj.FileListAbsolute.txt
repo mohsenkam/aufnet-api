@@ -1,0 +1,4 @@
+C:\Users\Mohsenk\Source\other\Repos\src\Backend\Aufnet.Backend.Data\bin\Debug\netcoreapp1.1\Aufnet.Backend.Data.deps.json
+C:\Users\Mohsenk\Source\other\Repos\src\Backend\Aufnet.Backend.Data\bin\Debug\netcoreapp1.1\Aufnet.Backend.Data.dll
+C:\Users\Mohsenk\Source\other\Repos\src\Backend\Aufnet.Backend.Data\obj\Debug\netcoreapp1.1\Aufnet.Backend.Data.csprojResolveAssemblyReference.cache
+C:\Users\Mohsenk\Source\other\Repos\src\Backend\Aufnet.Backend.Data\obj\Debug\netcoreapp1.1\Aufnet.Backend.Data.AssemblyInfo.cs
