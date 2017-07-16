@@ -8,3 +8,11 @@ C:\Users\Mohsenk\Source\other\Repos\src\Backend\Aufnet.Backend.Api\obj\Debug\net
 C:\Users\Mohsenk\Source\other\Repos\src\Backend\Aufnet.Backend.Api\obj\Debug\netcoreapp1.1\Aufnet.Backend.Api.dll
 C:\Users\Mohsenk\Source\other\Repos\src\Backend\Aufnet.Backend.Api\obj\Debug\netcoreapp1.1\Aufnet.Backend.Api.pdb
 C:\Users\Mohsenk\Source\other\Repos\src\Backend\Aufnet.Backend.Api\bin\Debug\netcoreapp1.1\Aufnet.Backend.Data.dll
+C:\Users\Mohsenk\af\Source\Repos\AufnetAPI\Backend\Aufnet.Backend.Api\bin\Debug\netcoreapp1.1\Aufnet.Backend.Api.deps.json
+C:\Users\Mohsenk\af\Source\Repos\AufnetAPI\Backend\Aufnet.Backend.Api\bin\Debug\netcoreapp1.1\Aufnet.Backend.Api.runtimeconfig.json
+C:\Users\Mohsenk\af\Source\Repos\AufnetAPI\Backend\Aufnet.Backend.Api\bin\Debug\netcoreapp1.1\Aufnet.Backend.Api.runtimeconfig.dev.json
+C:\Users\Mohsenk\af\Source\Repos\AufnetAPI\Backend\Aufnet.Backend.Api\bin\Debug\netcoreapp1.1\Aufnet.Backend.Data.dll
+C:\Users\Mohsenk\af\Source\Repos\AufnetAPI\Backend\Aufnet.Backend.Api\obj\Debug\netcoreapp1.1\Aufnet.Backend.Api.csprojResolveAssemblyReference.cache
+C:\Users\Mohsenk\af\Source\Repos\AufnetAPI\Backend\Aufnet.Backend.Api\obj\Debug\netcoreapp1.1\Aufnet.Backend.Api.AssemblyInfo.cs
+C:\Users\Mohsenk\af\Source\Repos\AufnetAPI\Backend\Aufnet.Backend.Api\obj\Debug\netcoreapp1.1\Aufnet.Backend.Api.dll
+C:\Users\Mohsenk\af\Source\Repos\AufnetAPI\Backend\Aufnet.Backend.Api\obj\Debug\netcoreapp1.1\Aufnet.Backend.Api.pdb

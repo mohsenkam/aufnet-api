@@ -35,23 +35,23 @@ namespace Aufnet.Backend.Api
             // Configure the Serilog pipeline
             if (env.EnvironmentName == "Production")
             {
-                //Log.Logger = new LoggerConfiguration()
-                //    //.MinimumLevel.Debug()
-                //    .MinimumLevel.Information()
-                //    .Enrich
-                //    .FromLogContext()
-                //    .WriteTo.RollingFile("logs\\gardenia-api-{Date}.txt")
-                //    .CreateLogger();
+                Log.Logger = new LoggerConfiguration()
+                    //.MinimumLevel.Debug()
+                    .MinimumLevel.Information()
+                    .Enrich
+                    .FromLogContext()
+                    .WriteTo.RollingFile("logs\\gardenia-api-{Date}.txt")
+                    .CreateLogger();
             }
             else
             {
-                //Log.Logger = new LoggerConfiguration()
-                //    //.MinimumLevel.Debug()
-                //    .MinimumLevel.Information()
-                //    .Enrich
-                //    .FromLogContext()
-                //    .WriteTo.LiterateConsole()
-                //    .CreateLogger();
+                Log.Logger = new LoggerConfiguration()
+                    //.MinimumLevel.Debug()
+                    .MinimumLevel.Information()
+                    .Enrich
+                    .FromLogContext()
+                    .WriteTo.LiterateConsole()
+                    .CreateLogger();
             }
         }
 

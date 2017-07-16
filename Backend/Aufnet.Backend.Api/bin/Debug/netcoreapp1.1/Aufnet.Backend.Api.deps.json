@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.1",
-    "signature": "d4625601ff7eace63aa7c863fdfb583e7e38aa62"
+    "signature": "01dbc68385129174c8b37582699e8e0686c9fd64"
   },
   "compilationOptions": {
     "defines": [
@@ -35,7 +35,9 @@
           "OpenIddict": "1.0.0-beta2-0615",
           "OpenIddict.EntityFrameworkCore": "1.0.0-beta2-0615",
           "OpenIddict.Mvc": "1.0.0-beta2-0615",
-          "Serilog": "2.5.0"
+          "Serilog": "2.5.0",
+          "Serilog.Extensions.Logging": "1.4.0",
+          "Serilog.Sinks.Literate": "3.0.0"
         },
         "runtime": {
           "Aufnet.Backend.Api.dll": {}
@@ -1571,6 +1573,43 @@
         },
         "compile": {
           "lib/netstandard1.3/Serilog.dll": {}
+        }
+      },
+      "serilog.extensions.logging/1.4.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "1.1.2",
+          "Serilog": "2.5.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/Serilog.Extensions.Logging.dll": {}
+        },
+        "compile": {
+          "lib/netstandard1.3/Serilog.Extensions.Logging.dll": {}
+        }
+      },
+      "serilog.sinks.console/3.0.1": {
+        "dependencies": {
+          "Serilog": "2.5.0",
+          "System.Console": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Runtime.InteropServices.RuntimeInformation": "4.3.0"
+        },
+        "runtime": {
+          "lib/netcoreapp1.1/Serilog.Sinks.Console.dll": {}
+        },
+        "compile": {
+          "lib/netcoreapp1.1/Serilog.Sinks.Console.dll": {}
+        }
+      },
+      "serilog.sinks.literate/3.0.0": {
+        "dependencies": {
+          "Serilog.Sinks.Console": "3.0.1"
+        },
+        "runtime": {
+          "lib/netstandard1.3/Serilog.Sinks.Literate.dll": {}
+        },
+        "compile": {
+          "lib/netstandard1.3/Serilog.Sinks.Literate.dll": {}
         }
       },
       "system.collections.nongeneric/4.3.0": {
@@ -4302,6 +4341,27 @@
       "sha512": "sha512-JwwkgNYNFKT4kQZ3qBV3VqPgchUg1A6FnlFa9hgyanylwBhJ7eTFl3pgLVxijFEb+oHLImRcMaTsMzBt2AG0aQ==",
       "path": "serilog/2.5.0",
       "hashPath": "serilog.2.5.0.nupkg.sha512"
+    },
+    "serilog.extensions.logging/1.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nsg2CFYIQsZcNXYajDBNL+Li0EnFibOSLaACcpy+XGyrbmIEhGdLYiMXxadUE10kFfLLLbruZtdbGJ7OOudXlA==",
+      "path": "serilog.extensions.logging/1.4.0",
+      "hashPath": "serilog.extensions.logging.1.4.0.nupkg.sha512"
+    },
+    "serilog.sinks.console/3.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-u9jFZu9yT7d7zvH+sRERszf+VAFufEIHOGoFqihVOvlD9G0D/BJnH0QZ3O5jFQxexD0geTeDuUlvq14eVEGqSA==",
+      "path": "serilog.sinks.console/3.0.1",
+      "hashPath": "serilog.sinks.console.3.0.1.nupkg.sha512"
+    },
+    "serilog.sinks.literate/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ObduW3qs+t1EUNcXgagSK+gAQrYQOhNgTcOKcytDdfAJQsIVx3297y0fRJyd6VmmuyowxtyIcmzYeJaFDfQt2w==",
+      "path": "serilog.sinks.literate/3.0.0",
+      "hashPath": "serilog.sinks.literate.3.0.0.nupkg.sha512"
     },
     "system.collections.nongeneric/4.3.0": {
       "type": "package",

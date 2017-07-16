@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.1",
-    "signature": "f5a5c965e4270e12ec2fa9058f9a79ba2fad32ea"
+    "signature": "cf1c41169ba8adc4d5047b693701ea4a7c86ce9b"
   },
   "compilationOptions": {},
   "targets": {
@@ -10,7 +10,8 @@
         "dependencies": {
           "MSTest.TestAdapter": "1.1.11",
           "MSTest.TestFramework": "1.1.11",
-          "Microsoft.NET.Test.Sdk": "15.0.0"
+          "Microsoft.NET.Test.Sdk": "15.0.0",
+          "NUnit": "3.7.1"
         },
         "runtime": {
           "Aufnet.Backend.UnitTests.dll": {}
@@ -262,6 +263,11 @@
           "lib/netstandard1.0/Newtonsoft.Json.dll": {}
         }
       },
+      "nunit/3.7.1": {
+        "runtime": {
+          "lib/netstandard1.6/nunit.framework.dll": {}
+        }
+      },
       "system.collections.nongeneric/4.0.1": {
         "runtime": {
           "lib/netstandard1.3/System.Collections.NonGeneric.dll": {}
@@ -396,6 +402,13 @@
       "sha512": "sha512-U82mHQSKaIk+lpSVCbWYKNavmNH1i5xrExDEquU1i6I5pV6UMOqRnJRSlKO3cMPfcpp0RgDY+8jUXHdQ4IfXvw==",
       "path": "newtonsoft.json/9.0.1",
       "hashPath": "newtonsoft.json.9.0.1.nupkg.sha512"
+    },
+    "nunit/3.7.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-vUTICvR3uqw6OTOcwsfz22KjVk8xFcNdz22XnGPL3itQU7+HSV+8xySjGmVkMWZ4IPbaV/+T33C775EEtiEYIA==",
+      "path": "nunit/3.7.1",
+      "hashPath": "nunit.3.7.1.nupkg.sha512"
     },
     "system.collections.nongeneric/4.0.1": {
       "type": "package",
