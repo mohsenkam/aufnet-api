@@ -64,7 +64,6 @@ namespace Aufnet.Backend.Api
             services.AddMvc();
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                //options.UseSqlite("Data Source=GardeniaDb.sqlite");
                 options.UseSqlServer(Configuration["ConnectionStrings:AufnetDB"]);
                 // Register the entity sets needed by OpenIddict.
                 // Note: use the generic overload if you need
