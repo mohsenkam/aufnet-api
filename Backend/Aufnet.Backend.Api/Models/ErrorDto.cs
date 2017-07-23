@@ -7,7 +7,15 @@ namespace Aufnet.Backend.Api.Models
 {
     public class ErrorDto
     {
-        public string Code { get; set; }
-        public string Message { get; set; }
+
+
+        public ErrorDto(string code, string message)
+        {
+            Code = code;
+            Message = message;
+        }
+
+        public string Code { get;}
+        public string Message { get;}
     }
 }

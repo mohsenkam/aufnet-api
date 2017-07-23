@@ -35,6 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aufnet.Backend.Data\Aufnet.Backend.Data.csproj" />
+    <ProjectReference Include="..\Aufnet.Backend.Services\Aufnet.Backend.Services.csproj" />
   </ItemGroup>
 
 </Project>

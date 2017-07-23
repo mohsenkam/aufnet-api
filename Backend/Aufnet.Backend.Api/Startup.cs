@@ -6,6 +6,7 @@ using System;
 using System.Text;
 using AspNet.Security.OpenIdConnect.Primitives;
 using Aufnet.Backend.Api.Models;
+using Aufnet.Backend.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -136,6 +137,7 @@ namespace Aufnet.Backend.Api
 
 
             //app services
+            services.AddScoped<IUserService, UsersService>();
             //services.AddScoped<IMessagingService, MessagingService>();
             //services.AddTransient<IDscProcessorService, DscProcessorService>();
             //services.AddTransient<IStaffService, StaffService>();
@@ -192,12 +194,7 @@ namespace Aufnet.Backend.Api
                     var error = context.Features.Get<IExceptionHandlerFeature>();
                     if (error != null){
                         var ex = error.Error;
-                        var responseJson = JsonConvert.SerializeObject(new ErrorDto()
-                        {
-                            Code = ex.Source,
-                            Message = ex.Message // or your custom message
-                            // other custom data
-                        });
+                        var responseJson = JsonConvert.SerializeObject(new ErrorDto(ex.Source, ex.Message));
                         await context.Response.WriteAsync(responseJson, Encoding.UTF8);
                     }
                 });

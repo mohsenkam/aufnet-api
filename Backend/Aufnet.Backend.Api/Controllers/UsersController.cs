@@ -2,8 +2,10 @@
 using System.Threading.Tasks;
 using Aufnet.Backend.Api.ActionFilters;
 using Aufnet.Backend.Api.Models;
+using Aufnet.Backend.Api.Shared;
 using Aufnet.Backend.Api.Validation;
 using Aufnet.Backend.Data.Models.Entities.Identity;
+using Aufnet.Backend.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,89 +15,91 @@ namespace Aufnet.Backend.Api.Controllers
     public class UsersController: BaseController
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserService _userService;
 
-        public UsersController(UserManager<ApplicationUser> userManager)
+        public UsersController(UserManager<ApplicationUser> userManager, IUserService userService)
         {
             _userManager = userManager;
+            _userService = userService;
         }
 
-        [HttpGet]
-        public IActionResult Get()
-        {
-            var usrs = _userManager.Users.Where(x => x.UserName != "sa");            
+        //[HttpGet]
+        //public IActionResult Get()
+        //{
+        //    var usrs = _userManager.Users.Where(x => x.UserName != "sa");            
 
-            var dtos = usrs.Select(x => new UserDto
-            {
-                Username = x.UserName,
-                Email = x.Email,                
-                FirstName = x.FirstName,
-                LastName = x.LastName,
+        //    var dtos = usrs.Select(x => new UserDto
+        //    {
+        //        Username = x.UserName,
+        //        Email = x.Email,                
+        //        FirstName = x.FirstName,
+        //        LastName = x.LastName,
 
-            });
+        //    });
 
-            return Ok(new { data = dtos });
-        }
+        //    return Ok(new { data = dtos });
+        //}
 
 
-        //GET users/sa
-        [HttpGet("{username}")]        
-        public async Task<IActionResult> Get(string username)
-        {
-            var usr = await _userManager.FindByNameAsync(username);
-            if (usr == null)
-                return NotFound("No user found");
-            var roles = await _userManager.GetRolesAsync(usr);
-            var dto=new UserDto
-            {
-                Username = usr.UserName,
-                Email = usr.Email,
-                FirstName = usr.FirstName,
-                LastName = usr.LastName,
-                Roles = string.Join(",", roles)
-            };
+        ////GET users/sa
+        //[HttpGet("{username}")]        
+        //public async Task<IActionResult> Get(string username)
+        //{
+        //    var usr = await _userManager.FindByNameAsync(username);
+        //    if (usr == null)
+        //        return NotFound("No user found");
+        //    var roles = await _userManager.GetRolesAsync(usr);
+        //    var dto=new UserDto
+        //    {
+        //        Username = usr.UserName,
+        //        Email = usr.Email,
+        //        FirstName = usr.FirstName,
+        //        LastName = usr.LastName,
+        //        Roles = string.Join(",", roles)
+        //    };
 
-            return Ok(dto);
-        }
+        //    return Ok(dto);
+        //}
 
-        //POST staffs
+        //POST use
         [HttpPost]
         [ValidateModel]
         public async Task<IActionResult> Post([FromBody]UserDto value)
         {
-            var usr = new ApplicationUser
+            //validation
+            if (!RolesConstants.Roles.Contains(value.Role))
             {
-                UserName = value.Username,
-                FirstName = value.FirstName,
-                LastName = value.LastName,
-                Email = value.Email,
-                EmailConfirmed = false
-            };
-            var result=await _userManager.CreateAsync(usr, value.Password);
-            if (!result.Succeeded)
+                ModelState.AddModelError(ErrorCodesConstants.NotExistingRole.Code, ErrorCodesConstants.NotExistingRole.Message);
+            }
+
+            //preparation
+
+            //logic
+            var result=await _userService.SignUpAsync(value.Username, value.Password, value.Role);
+            if (result.HasError())
             {
-                foreach (var error in result.Errors)
+                foreach (var error in result.GetErrors())
                 {
-                    ModelState.AddModelError("", error.Description);
+                    ModelState.AddModelError(error.Code, error.Message);
                 }
 
                 return new ValidationFailedResult(ModelState);
             }
-            await AssignRoles(usr, value.Roles);            
 
             return Ok();
         }        
 
-        // PUT staffs/5
-        [HttpPut("{username}")]
-        public async Task Put(string username, [FromBody]UserDto value)
-        {
-            var usr=await _userManager.FindByNameAsync(username);
-            usr.FirstName = value.FirstName;
-            usr.LastName = value.LastName;
-            usr.Email = value.Email;
-            await _userManager.UpdateAsync(usr);
-            await AssignRoles(usr, value.Roles);
-        }
+        //// PUT users/5
+        //[HttpPut("{username}")]
+        //public async Task Put(string username, [FromBody]UserDto value)
+        //{
+        //    var usr=await _userManager.FindByNameAsync(username);
+        //    usr.FirstName = value.FirstName;
+        //    usr.LastName = value.LastName;
+        //    usr.Email = value.Email;
+        //    await _userManager.UpdateAsync(usr);
+        //    await AssignRoles(usr, value.Roles);
+        //}
 
 
         // DELETE staffs/5
@@ -106,25 +110,7 @@ namespace Aufnet.Backend.Api.Controllers
         }
 
 
-        private async Task AssignRoles(ApplicationUser user, string roles)
-        {
-            var allowedRoles = new[] { "CUSTOMER", "ADMIN", "MERCHANT" };
-            var assignedRoles = roles?.ToUpper().Split(',');
-            var existingRoles = await _userManager.GetRolesAsync(user);
-
-            foreach (var existingRole in existingRoles)
-            {
-                await _userManager.RemoveFromRoleAsync(user, existingRole);
-            }
-            if (assignedRoles != null)
-            {
-                foreach (var role in assignedRoles)
-                {
-                    if (allowedRoles.Contains(role))
-                        await _userManager.AddToRoleAsync(user, role);
-                }
-            }
-        }
+        
 
     }
 }
