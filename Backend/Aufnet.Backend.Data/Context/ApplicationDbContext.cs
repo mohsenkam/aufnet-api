@@ -1,4 +1,5 @@
 ﻿using Aufnet.Backend.Data.Models.Entities;
+using Aufnet.Backend.Data.Models.Entities.Customer;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -16,8 +17,9 @@ namespace Aufnet.Backend.Data.Context
         {
             base.OnModelCreating(modelBuilder);
 
-
+            
         }
+        public DbSet<CustomerProfile> CustomerProfiles { get; set; }
 
     }
 }
