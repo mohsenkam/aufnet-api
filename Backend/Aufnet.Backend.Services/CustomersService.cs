@@ -8,11 +8,11 @@ using Aufnet.Backend.Services.Base.Exceptions;
 
 namespace Aufnet.Backend.Services
 {
-    public class UsersService: IUserService
+    public class CustomersService: ICustomerService
     {
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public UsersService(UserManager<ApplicationUser> userManager)
+        public CustomersService(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }

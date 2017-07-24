@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Aufnet.Backend.Api.ActionFilters;
 using Aufnet.Backend.Api.Models;
@@ -6,23 +7,30 @@ using Aufnet.Backend.Api.Shared;
 using Aufnet.Backend.Api.Validation;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aufnet.Backend.Api.Controllers
 {
-    [Route("[controller]")]    
-    public class UsersController: BaseController
+    [Route("api/[controller]")]    
+    public class CustomersController: BaseController
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IUserService _userService;
+        private readonly ICustomerService _customerService;
 
-        public UsersController(UserManager<ApplicationUser> userManager, IUserService userService)
+        public CustomersController(UserManager<ApplicationUser> userManager, ICustomerService customerService)
         {
             _userManager = userManager;
-            _userService = userService;
+            _customerService = customerService;
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public IEnumerable<string> Get()
+        {
+            return new string[] { "value111", "value2" };
+        }
         //[HttpGet]
         //public IActionResult Get()
         //{
@@ -61,21 +69,23 @@ namespace Aufnet.Backend.Api.Controllers
         //    return Ok(dto);
         //}
 
-        //POST use
+        //POST 
         [HttpPost]
         [ValidateModel]
-        public async Task<IActionResult> Post([FromBody]UserDto value)
+        [AllowAnonymous]
+        public async Task<IActionResult> Post([FromBody]CustomerSignUpDto value)
         {
             //validation
             if (!RolesConstants.Roles.Contains(value.Role))
             {
                 ModelState.AddModelError(ErrorCodesConstants.NotExistingRole.Code, ErrorCodesConstants.NotExistingRole.Message);
+                return new ValidationFailedResult(ModelState);
             }
 
             //preparation
 
             //logic
-            var result=await _userService.SignUpAsync(value.Username, value.Password, value.Role);
+            var result=await _customerService.SignUpAsync(value.Username, value.Password, value.Role);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())

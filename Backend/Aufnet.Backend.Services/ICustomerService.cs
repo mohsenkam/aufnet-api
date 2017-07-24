@@ -3,7 +3,7 @@ using Aufnet.Backend.Services.Base;
 
 namespace Aufnet.Backend.Services
 {
-    public interface IUserService
+    public interface ICustomerService
     {
         Task<IServiceResult> SignUpAsync(string username, string password, string role);
         IServiceResult SignIn(string username, string password);

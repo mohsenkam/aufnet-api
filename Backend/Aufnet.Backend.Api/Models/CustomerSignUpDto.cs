@@ -3,9 +3,9 @@ using Newtonsoft.Json;
 
 namespace Aufnet.Backend.Api.Models
 {
-    public class UserDto
+    public class CustomerSignUpDto
     {
-        
+
         [Required]
         public string Username { get; set; }
 
