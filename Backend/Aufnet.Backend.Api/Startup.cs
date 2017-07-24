@@ -138,6 +138,7 @@ namespace Aufnet.Backend.Api
 
             //app services
             services.AddScoped<ICustomerService, CustomersService>();
+            services.AddScoped<IMerchantsService, MerchantsService>();
             //services.AddScoped<IMessagingService, MessagingService>();
             //services.AddTransient<IDscProcessorService, DscProcessorService>();
             //services.AddTransient<IStaffService, StaffService>();
