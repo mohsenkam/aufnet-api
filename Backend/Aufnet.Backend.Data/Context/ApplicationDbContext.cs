@@ -1,5 +1,6 @@
 ﻿using Aufnet.Backend.Data.Models.Entities;
 using Aufnet.Backend.Data.Models.Entities.Identity;
+using Aufnet.Backend.Data.Models.Entities.Merchant;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,8 @@ namespace Aufnet.Backend.Data.Context
 
 
         }
+
+        public DbSet<MerchantProfile> MerchantProfiles { get; set; }
 
     }
 }
