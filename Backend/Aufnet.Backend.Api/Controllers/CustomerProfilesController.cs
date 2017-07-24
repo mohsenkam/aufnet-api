@@ -2,42 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Aufnet.Backend.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aufnet.Backend.Api.Controllers
 {
-    //[Route("[controller")]
-    public class CustomerProfilesController//: BaseController
+    [Route("api/[controller")]
+    public class CustomerProfilesController: BaseController
     {
-        // GET api/values
-        [HttpGet]
-        public IEnumerable<string> Get()
+
+        // GET api/customerprofiles/john
+        [HttpGet("{username}")]
+        public CustomerProfileDto Get(string username)
         {
-            return new string[] { "value1", "value2" };
+            throw new NotImplementedException();
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/values
+        // POST api/customerprofiles
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post([FromBody]CustomerProfileDto value)
         {
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // PUT api/customerprofiles/john
+        [HttpPut("{username}")]
+        public void Put(string username, [FromBody]CustomerProfileDto value)
         {
         }
     }
