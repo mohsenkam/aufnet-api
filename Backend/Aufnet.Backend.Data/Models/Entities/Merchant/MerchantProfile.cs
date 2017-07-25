@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Data.Models.Entities.Shared;
 
@@ -7,11 +9,14 @@ namespace Aufnet.Backend.Data.Models.Entities.Merchant
 {
     public class MerchantProfile
     {
-        [Key]
-        public int Id { get; set; }   
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column(Order = 1)]
+        public int Id { get; set; }
+        [MaxLength(80)]
         public string BusinessName { get; set; }
-        public Address Address { get; set; }
-    
+
+        [Column(Order = 2)]
+        public virtual Address Address { get; set; }
 
         public virtual ApplicationUser ApplicationUser { get; set; }
         public string ApplicationUserId { get; set; }

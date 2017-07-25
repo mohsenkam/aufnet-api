@@ -1,6 +1,7 @@
 ﻿using Aufnet.Backend.Data.Models.Entities;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Data.Models.Entities.Merchant;
+using Aufnet.Backend.Data.Models.Entities.Shared;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,7 @@ namespace Aufnet.Backend.Data.Context
         }
 
         public DbSet<MerchantProfile> MerchantProfiles { get; set; }
+        public DbSet<Address> Addresses { get; set; }
 
     }
 }
