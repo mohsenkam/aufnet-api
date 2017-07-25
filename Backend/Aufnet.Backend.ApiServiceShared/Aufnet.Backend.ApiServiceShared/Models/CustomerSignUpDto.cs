@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace Aufnet.Backend.Api.Models
+namespace Aufnet.Backend.ApiServiceShared.Models
 {
     public class CustomerSignUpDto
     {

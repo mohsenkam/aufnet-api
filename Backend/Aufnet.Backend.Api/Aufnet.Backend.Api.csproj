@@ -12,6 +12,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\**" />
+    <Content Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Shared\ErrorCodesConstants.cs" />
+    <Compile Remove="Shared\RolesConstants.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Shared\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>

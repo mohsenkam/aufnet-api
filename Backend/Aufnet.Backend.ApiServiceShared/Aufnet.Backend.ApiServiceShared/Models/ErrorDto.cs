@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Aufnet.Backend.Api.Models
+﻿namespace Aufnet.Backend.ApiServiceShared.Models
 {
     public class ErrorDto
     {

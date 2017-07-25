@@ -5,6 +5,7 @@ using Aufnet.Backend.Api.ActionFilters;
 using Aufnet.Backend.Api.Models;
 using Aufnet.Backend.Api.Shared;
 using Aufnet.Backend.Api.Validation;
+using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Services;
 using Microsoft.AspNetCore.Authorization;

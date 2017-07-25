@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
+using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.Services.Base;
 using Microsoft.AspNetCore.Identity;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Services.Base.Exceptions;
-using Aufnet.Backend.Services.Shared;
 
 namespace Aufnet.Backend.Services
 {
@@ -54,7 +53,7 @@ namespace Aufnet.Backend.Services
             var user = await _userManager.FindByNameAsync(username);
             if (user == null)
             {
-                serviceResult.AddError(new ErrorMessage(ServiceErrorCodesConstants.NotExistingUser, ""));
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingUser.Code, ErrorCodesConstants.NotExistingUser.Message));
                 return serviceResult;
             }
 

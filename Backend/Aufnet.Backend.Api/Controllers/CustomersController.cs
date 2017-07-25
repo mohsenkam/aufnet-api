@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Aufnet.Backend.Api.ActionFilters;
-using Aufnet.Backend.Api.Models;
 using Aufnet.Backend.Api.Shared;
 using Aufnet.Backend.Api.Validation;
+using Aufnet.Backend.ApiServiceShared.Models;
+using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Services;
-using Aufnet.Backend.Services.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -84,9 +83,6 @@ namespace Aufnet.Backend.Api.Controllers
             {
                 foreach (var error in result.GetErrors())
                 {
-                    if (!String.IsNullOrEmpty(error.Code) && error.Code.Equals(ServiceErrorCodesConstants.NotExistingUser))
-                        ModelState.AddModelError(ErrorCodesConstants.NotExistingUser.Code,
-                            ErrorCodesConstants.NotExistingUser.Message);
                     ModelState.AddModelError(error.Code, error.Message);
                 }
 

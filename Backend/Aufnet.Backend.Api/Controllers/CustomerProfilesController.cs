@@ -1,5 +1,5 @@
 ﻿using System;
-using Aufnet.Backend.Api.Models;
+using Aufnet.Backend.ApiServiceShared.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aufnet.Backend.Api.Controllers

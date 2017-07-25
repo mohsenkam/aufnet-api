@@ -12,11 +12,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Base\**" />
+    <EmbeddedResource Remove="Base\**" />
+    <None Remove="Base\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Shared\ServiceErrorCodesConstants.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="1.1.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Aufnet.Backend.ApiServiceShared\Aufnet.Backend.ApiServiceShared\Aufnet.Backend.ApiServiceShared.csproj" />
     <ProjectReference Include="..\Aufnet.Backend.Data\Aufnet.Backend.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Shared\" />
   </ItemGroup>
 
 </Project>

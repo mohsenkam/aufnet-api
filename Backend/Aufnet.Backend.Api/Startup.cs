@@ -5,7 +5,7 @@ using Aufnet.Backend.Data.Models.Entities.Identity;
 using System;
 using System.Text;
 using AspNet.Security.OpenIdConnect.Primitives;
-using Aufnet.Backend.Api.Models;
+using Aufnet.Backend.ApiServiceShared.Models;
 using Aufnet.Backend.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
