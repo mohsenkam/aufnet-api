@@ -11,6 +11,7 @@ namespace Aufnet.Backend.Data.Models.Entities.Shared
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column(Order = 1)]
+        [Range(1, 500)]
         public int Id { get; set; } 
         
         public string Country { get; set; }

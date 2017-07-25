@@ -11,6 +11,7 @@ namespace Aufnet.Backend.Data.Models.Entities.Merchant
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column(Order = 1)]
+        [Range(1, 500)]
         public int Id { get; set; }
         [MaxLength(80)]
         public string BusinessName { get; set; }
