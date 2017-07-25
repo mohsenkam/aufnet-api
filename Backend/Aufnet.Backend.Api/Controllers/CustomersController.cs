@@ -33,17 +33,8 @@ namespace Aufnet.Backend.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Post([FromBody]CustomerSignUpDto value)
         {
-            //validation
-            if (!RolesConstants.Roles.Contains(value.Role))
-            {
-                ModelState.AddModelError(ErrorCodesConstants.NotExistingRole.Code, ErrorCodesConstants.NotExistingRole.Message);
-                return new ValidationFailedResult(ModelState);
-            }
 
-            //preparation
-
-            //logic
-            var result=await _customerService.SignUpAsync(value.Username, value.Password, value.Role);
+            var result=await _customerService.SignUpAsync(value);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
@@ -60,25 +51,15 @@ namespace Aufnet.Backend.Api.Controllers
         //POST 
         [HttpPost("{username}")]
         [ValidateModel]
-        public async Task<IActionResult> UpdatePassword(string username, [FromBody]CustomerChangePasswordDto value)
+        public async Task<IActionResult> UpdatePassword([FromBody]CustomerChangePasswordDto value)
         {
 
-            //validation
-            if (String.IsNullOrEmpty(value.CurrentPassword))
-            {
-                ModelState.AddModelError(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "CurrentPassword");
-                return new ValidationFailedResult(ModelState);
-            }
-            if (String.IsNullOrEmpty(value.NewPassword))
-            {
-                ModelState.AddModelError(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "NewPassword");
-                return new ValidationFailedResult(ModelState);
-            }
+            
 
             //preparation
 
             //logic
-            var result = await _customerService.SignUpAsync(username, value.CurrentPassword, value.NewPassword);
+            var result = await _customerService.ChangePasswordAsync(value);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())

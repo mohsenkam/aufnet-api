@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Aufnet.Backend.Api.Shared;
+using Aufnet.Backend.ApiServiceShared.Models;
 using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.Services.Base;
 using Microsoft.AspNetCore.Identity;
@@ -16,14 +19,21 @@ namespace Aufnet.Backend.Services
         {
             _userManager = userManager;
         }
-        public async Task<IServiceResult> SignUpAsync(string username, string password, string role)
+        public async Task<IServiceResult> SignUpAsync(CustomerSignUpDto value)
         {
+            
             var serviceResult = new ServiceResult();
+            if (!RolesConstants.Roles.Contains(value.Role))
+            {
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingRole.Code, ErrorCodesConstants.NotExistingRole.Message));
+                return serviceResult;
+            }
+
             var user = new ApplicationUser
             {
-                UserName = username,
+                UserName = value.Username,
             };
-            var result = await _userManager.CreateAsync(user, password);
+            var result = await _userManager.CreateAsync(user, value.Password);
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)
@@ -35,7 +45,7 @@ namespace Aufnet.Backend.Services
             }
             try
             {
-                await AssignRole(user, role);
+                await AssignRole(user, value.Role);
             }
             catch (InvalidArgumentException exception)
             {
@@ -47,17 +57,31 @@ namespace Aufnet.Backend.Services
 
         }
 
-        public async Task<IServiceResult> ChangePasswordAsync(string username, string currentPassword, string newPassword)
+        public async Task<IServiceResult> ChangePasswordAsync(CustomerChangePasswordDto value)
         {
             var serviceResult = new ServiceResult();
-            var user = await _userManager.FindByNameAsync(username);
+
+            //validation
+            if (String.IsNullOrEmpty(value.CurrentPassword))
+            {
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "CurrentPassword"));
+                return serviceResult;
+            }
+            if (String.IsNullOrEmpty(value.NewPassword))
+            {
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "NewPassword"));
+                return serviceResult;
+            }
+            //end validation
+
+            var user = await _userManager.FindByNameAsync(value.Username);
             if (user == null)
             {
                 serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingUser.Code, ErrorCodesConstants.NotExistingUser.Message));
                 return serviceResult;
             }
 
-            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            var result = await _userManager.ChangePasswordAsync(user, value.CurrentPassword, value.NewPassword);
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)
