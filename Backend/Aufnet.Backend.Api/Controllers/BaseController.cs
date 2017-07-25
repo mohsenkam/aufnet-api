@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aufnet.Backend.Api.Controllers
 {
-    //[Authorize]
+    //[Authorize] todo: uncomment this
     public class BaseController:Controller
     {
 

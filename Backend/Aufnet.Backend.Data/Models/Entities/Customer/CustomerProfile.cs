@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Aufnet.Backend.Data.Models.Entities.Identity;
+using Aufnet.Backend.Data.Models.Entities.Shared;
 
 namespace Aufnet.Backend.Data.Models.Entities.Customer
 {
-    public class Profile
+
+    public class CustomerProfile: Entity
     {
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        private int Test;
-
+        
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
 

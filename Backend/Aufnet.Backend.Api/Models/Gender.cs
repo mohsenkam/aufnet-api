@@ -1,4 +1,4 @@
-﻿namespace Aufnet.Backend.Data.Models.Entities.Customer
+﻿namespace Aufnet.Backend.Api.Models
 {
     public enum Gender
     {

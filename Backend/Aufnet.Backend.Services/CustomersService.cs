@@ -5,6 +5,7 @@ using Aufnet.Backend.Services.Base;
 using Microsoft.AspNetCore.Identity;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Services.Base.Exceptions;
+using Aufnet.Backend.Services.Shared;
 
 namespace Aufnet.Backend.Services
 {
@@ -45,6 +46,27 @@ namespace Aufnet.Backend.Services
 
             return serviceResult;
 
+        }
+
+        public async Task<IServiceResult> ChangePasswordAsync(string username, string currentPassword, string newPassword)
+        {
+            var serviceResult = new ServiceResult();
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                serviceResult.AddError(new ErrorMessage(ServiceErrorCodesConstants.NotExistingUser, ""));
+                return serviceResult;
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    serviceResult.AddError(new ErrorMessage("", error.Description));
+                }
+            }
+            return serviceResult;
         }
 
         public IServiceResult SignIn(string username, string password)

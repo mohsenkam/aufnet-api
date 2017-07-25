@@ -1,4 +1,5 @@
 ﻿using Aufnet.Backend.Data.Models.Entities;
+using Aufnet.Backend.Data.Models.Entities.Customer;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Data.Models.Entities.Merchant;
 using Aufnet.Backend.Data.Models.Entities.Shared;
@@ -18,8 +19,9 @@ namespace Aufnet.Backend.Data.Context
         {
             base.OnModelCreating(modelBuilder);
 
-
+            
         }
+        public DbSet<CustomerProfile> CustomerProfiles { get; set; }
 
         public DbSet<MerchantProfile> MerchantProfiles { get; set; }
         public DbSet<Address> Addresses { get; set; }
