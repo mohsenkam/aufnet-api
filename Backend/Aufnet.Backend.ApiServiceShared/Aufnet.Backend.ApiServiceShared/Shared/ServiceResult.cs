@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using Aufnet.Backend.Services.Base;
 
-namespace Aufnet.Backend.Services.Base
+namespace Aufnet.Backend.ApiServiceShared.Shared
 {
     public class ServiceResult : IServiceResult
     {

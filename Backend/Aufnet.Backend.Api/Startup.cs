@@ -6,7 +6,6 @@ using System;
 using System.Text;
 using AspNet.Security.OpenIdConnect.Primitives;
 using Aufnet.Backend.ApiServiceShared.Models;
-using Aufnet.Backend.ApiServiceShared.Models.Shared;
 using Aufnet.Backend.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -140,7 +139,7 @@ namespace Aufnet.Backend.Api
             //app services
             services.AddScoped<ICustomerService, CustomersService>();
             services.AddScoped<IMerchantsService, MerchantsService>();
-            services.AddScoped<IMerchantProfileService, MerchantProfilesService>();
+            services.AddScoped<ICustomerProfileService, CustomerProfilesService>();
             //services.AddScoped<IMessagingService, MessagingService>();
             //services.AddTransient<IDscProcessorService, DscProcessorService>();
             //services.AddTransient<IStaffService, StaffService>();
