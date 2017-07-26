@@ -18,6 +18,7 @@ namespace Aufnet.Backend.Data.Models.Entities.Merchant
 
         [Column(Order = 2)]
         public virtual Address Address { get; set; }
+        public string AddressId { get; set; }
 
         public virtual ApplicationUser ApplicationUser { get; set; }
         public string ApplicationUserId { get; set; }

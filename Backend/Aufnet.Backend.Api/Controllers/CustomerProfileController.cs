@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Aufnet.Backend.ApiServiceShared.Models;
+using Aufnet.Backend.ApiServiceShared.Models.Customer;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aufnet.Backend.Api.Controllers

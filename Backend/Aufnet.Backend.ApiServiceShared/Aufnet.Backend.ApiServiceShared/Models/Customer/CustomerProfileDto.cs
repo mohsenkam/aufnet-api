@@ -1,6 +1,7 @@
 ﻿using System;
+using Aufnet.Backend.ApiServiceShared.Models.Shared;
 
-namespace Aufnet.Backend.ApiServiceShared.Models
+namespace Aufnet.Backend.ApiServiceShared.Models.Customer
 {
     public class CustomerProfileDto
     {

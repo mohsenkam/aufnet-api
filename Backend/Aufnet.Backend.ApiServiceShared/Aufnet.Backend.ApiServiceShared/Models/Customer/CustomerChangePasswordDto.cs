@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Aufnet.Backend.ApiServiceShared.Models
+namespace Aufnet.Backend.ApiServiceShared.Models.Customer
 {
     public class CustomerChangePasswordDto
     {

@@ -1,4 +1,4 @@
-﻿using Aufnet.Backend.ApiServiceShared.Models;
+﻿using Aufnet.Backend.ApiServiceShared.Models.Shared;
 
 namespace Aufnet.Backend.ApiServiceShared.Shared
 {

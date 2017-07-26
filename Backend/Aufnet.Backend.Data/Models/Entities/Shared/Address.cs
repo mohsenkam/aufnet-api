@@ -21,10 +21,7 @@ namespace Aufnet.Backend.Data.Models.Entities.Shared
         [MaxLength(80)]
         public string Detail { get; set; }
 
-        public int PostCode { get; set; }
-
-
-        public virtual ApplicationUser ApplicationUser { get; set; }
-        public string ApplicationUserId { get; set; }
+        public string PostCode { get; set; }
+        
     }
 }

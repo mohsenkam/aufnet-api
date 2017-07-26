@@ -1,4 +1,4 @@
-﻿namespace Aufnet.Backend.ApiServiceShared.Models
+﻿namespace Aufnet.Backend.ApiServiceShared.Models.Shared
 {
     public enum Gender
     {

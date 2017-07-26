@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Aufnet.Backend.Api.Shared;
 using Aufnet.Backend.ApiServiceShared.Models;
+using Aufnet.Backend.ApiServiceShared.Models.Customer;
 using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.Services.Base;
 using Microsoft.AspNetCore.Identity;

@@ -1,11 +1,11 @@
 ﻿using System;
-using Aufnet.Backend.Data.Models.Entities.Shared;
+using Aufnet.Backend.ApiServiceShared.Models.Shared;
 
 namespace Aufnet.Backend.ApiServiceShared.Models
 {
     public class MerchantProfileDto
     {
         public string BusinessName { get; set; }
-        public virtual Address Address { get; set; }
+        public virtual AddressDto AddressDto { get; set; }
     }
 }
