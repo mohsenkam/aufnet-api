@@ -70,7 +70,7 @@ namespace Aufnet.Backend.Api.Controllers
             return Ok();
         }
 
-        [HttpDelete("{username}")]
+        [HttpDelete]
         public async Task Delete(string username)
         {
             await _merchantProfileService.DelteProfile(username);

@@ -6,6 +6,7 @@ using System;
 using System.Text;
 using AspNet.Security.OpenIdConnect.Primitives;
 using Aufnet.Backend.ApiServiceShared.Models;
+using Aufnet.Backend.ApiServiceShared.Models.Shared;
 using Aufnet.Backend.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;

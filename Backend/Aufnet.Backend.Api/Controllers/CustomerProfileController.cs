@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Aufnet.Backend.Api.Validation;
-using Aufnet.Backend.ApiServiceShared.Models;
+using Aufnet.Backend.ApiServiceShared.Models.Customer;
 using Aufnet.Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 

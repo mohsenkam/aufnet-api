@@ -23,6 +23,15 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "http://localhost:5000"
+    },
+    "Staging.Aufnet.Backend.Api": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "api/Customers",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Staging"
+      },
+      "applicationUrl": "http://localhost:5000"
     }
   }
 }
