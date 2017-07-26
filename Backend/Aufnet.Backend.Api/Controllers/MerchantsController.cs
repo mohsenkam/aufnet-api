@@ -31,6 +31,7 @@ namespace Aufnet.Backend.Api.Controllers
         public IEnumerable<string> Get()
         {
             return new string[] { "value111", "value2" };
+
         }
         //[HttpGet]
         //public IActionResult Get()
