@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aufnet.Backend.Data.Context
 {
-    public class ApplicationDbContext:IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext:IdentityDbContext//<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options)
         {
@@ -20,7 +20,10 @@ namespace Aufnet.Backend.Data.Context
 
             
         }
+
         public DbSet<CustomerProfile> CustomerProfiles { get; set; }
+        public DbSet<BookmarkedMerchantEvent> BookmarkedMerchantEvents { get; set; }
+        public DbSet<MerchantEvent> MerchantEvents { get; set; }
 
         public DbSet<MerchantProfile> MerchantProfiles { get; set; }
         public DbSet<Address> Addresses { get; set; }

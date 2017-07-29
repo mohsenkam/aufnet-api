@@ -8,6 +8,7 @@ using AspNet.Security.OpenIdConnect.Primitives;
 using Aufnet.Backend.ApiServiceShared.Models;
 using Aufnet.Backend.ApiServiceShared.Models.Shared;
 using Aufnet.Backend.Services;
+using Aufnet.Backend.Services.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -141,6 +142,7 @@ namespace Aufnet.Backend.Api
             services.AddScoped<ICustomerService, CustomersService>();
             services.AddScoped<IMerchantsService, MerchantsService>();
             services.AddScoped<ICustomerProfileService, CustomerProfilesService>();
+            services.AddScoped<IEmailService, SendGridEmailService>();
             //services.AddScoped<IMessagingService, MessagingService>();
             //services.AddTransient<IDscProcessorService, DscProcessorService>();
             //services.AddTransient<IStaffService, StaffService>();

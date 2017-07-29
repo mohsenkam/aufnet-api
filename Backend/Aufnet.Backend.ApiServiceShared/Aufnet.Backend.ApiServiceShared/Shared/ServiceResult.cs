@@ -22,7 +22,7 @@ namespace Aufnet.Backend.ApiServiceShared.Shared
 
         public bool HasError()
         {
-            return ErrorMessages.Count == 0;
+            return ErrorMessages.Count != 0;
         }
 
         private List<ErrorMessage> ErrorMessages { get; }

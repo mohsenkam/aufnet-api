@@ -7,8 +7,8 @@ namespace Aufnet.Backend.Services
     public interface ICustomerProfileService
     {
         Task<IGetServiceResult<CustomerProfileDto>> GetProfileAsync(string username);
-        Task<IServiceResult> CreateProfile();
-        Task<IServiceResult> UpdateProfile();
-        Task<IServiceResult> DelteProfile();
+        Task<IServiceResult> CreateProfile(string username, CustomerProfileDto value);
+        Task<IServiceResult> UpdateProfile(string username, CustomerProfileDto value);
+        Task<IServiceResult> DelteProfile(string username);
     }
 }

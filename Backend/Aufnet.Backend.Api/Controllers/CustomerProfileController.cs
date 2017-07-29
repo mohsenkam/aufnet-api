@@ -16,7 +16,7 @@ namespace Aufnet.Backend.Api.Controllers
             _customerProfileService = customerProfileService;
         }
 
-        // GET api/customers/john/customerprofile
+        // GET api/customers/john/profile
         [HttpGet]
         public async Task<IActionResult> GetAsync(string username)
         {
@@ -35,13 +35,13 @@ namespace Aufnet.Backend.Api.Controllers
             return Ok(result.GetData());
         }
 
-        // POST api/customers/john/customerprofile
+        // POST api/customers/john/profile
         [HttpPost]
         public void Post([FromBody]CustomerProfileDto value)
         {
         }
 
-        // PUT api/customers/john/customerprofile
+        // PUT api/customers/john/profile
         [HttpPut]
         public void Put(string username, [FromBody]CustomerProfileDto value)
         {

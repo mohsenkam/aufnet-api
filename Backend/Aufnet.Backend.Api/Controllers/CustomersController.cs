@@ -6,6 +6,7 @@ using Aufnet.Backend.Api.Shared;
 using Aufnet.Backend.Api.Validation;
 using Aufnet.Backend.ApiServiceShared.Models;
 using Aufnet.Backend.ApiServiceShared.Models.Customer;
+using Aufnet.Backend.ApiServiceShared.Models.Shared;
 using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Services;
@@ -27,14 +28,12 @@ namespace Aufnet.Backend.Api.Controllers
             _customerService = customerService;
         }
 
-
-        //POST 
+        //POST api/customers
         [HttpPost]
         [ValidateModel]
         [AllowAnonymous]
         public async Task<IActionResult> Post([FromBody]CustomerSignUpDto value)
         {
-
             var result=await _customerService.SignUpAsync(value);
             if (result.HasError())
             {
@@ -45,22 +44,15 @@ namespace Aufnet.Backend.Api.Controllers
 
                 return new ValidationFailedResult(ModelState);
             }
-
             return Ok();
         }
 
-        //POST 
-        [HttpPost("{username}")]
+        //PUT api/customers/confirmemail
+        [HttpPost("confirmemail")]
         [ValidateModel]
-        public async Task<IActionResult> UpdatePassword([FromBody]CustomerChangePasswordDto value)
+        public async Task<IActionResult> ConfirmEmail([FromBody]ConfirmEmailDto value )
         {
-
-            
-
-            //preparation
-
-            //logic
-            var result = await _customerService.ChangePasswordAsync(value);
+            var result = await _customerService.ConfirmEmailAsync(value);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
@@ -70,22 +62,44 @@ namespace Aufnet.Backend.Api.Controllers
 
                 return new ValidationFailedResult(ModelState);
             }
-            
             return Ok();
         }
 
-        
 
-
-        // DELETE customers/5
-        [HttpDelete("{username}")]
-        public async Task Delete(string username)
+        //PUT api/customers/john
+        [HttpPut("{username}")]
+        [ValidateModel]
+        public async Task<IActionResult> UpdatePassword(string username, [FromBody]CustomerChangePasswordDto value)
         {
-            await _userManager.DeleteAsync(await _userManager.FindByNameAsync(username));
+            var result = await _customerService.ChangePasswordAsync(username, value);
+            if (result.HasError())
+            {
+                foreach (var error in result.GetErrors())
+                {
+                    ModelState.AddModelError(error.Code, error.Message);
+                }
+
+                return new ValidationFailedResult(ModelState);
+            }
+            return Ok();
         }
 
+        // DELETE api/customers/john
+        [HttpDelete("{username}")]
+        public async Task<IActionResult> Delete(string username)
+        {
+            var result = await _customerService.DeleteAsync(username);
+            if (result.HasError())
+            {
+                foreach (var error in result.GetErrors())
+                {
+                    ModelState.AddModelError(error.Code, error.Message);
+                }
 
-        
+                return new ValidationFailedResult(ModelState);
+            }
+            return Ok();
+        }
 
     }
 }

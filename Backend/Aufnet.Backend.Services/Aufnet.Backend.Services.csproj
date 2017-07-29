@@ -22,16 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="1.1.2" />
+    <PackageReference Include="SendGrid" Version="9.5.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Aufnet.Backend.ApiServiceShared\Aufnet.Backend.ApiServiceShared\Aufnet.Backend.ApiServiceShared.csproj" />
     <ProjectReference Include="..\Aufnet.Backend.Data\Aufnet.Backend.Data.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Shared\" />
   </ItemGroup>
 
 </Project>

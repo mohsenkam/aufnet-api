@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Aufnet.Backend.ApiServiceShared.Models.Customer;
 using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.Data.Context;
+using Aufnet.Backend.Data.Models.Entities.Customer;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Services.Base;
 using Microsoft.AspNetCore.Identity;
@@ -60,19 +61,98 @@ namespace Aufnet.Backend.Services
             return getResult;
         }
 
-        public Task<IServiceResult> CreateProfile()
+        public async Task<IServiceResult> CreateProfile(string username, CustomerProfileDto value)
         {
-            throw new NotImplementedException();
+            var serviceResult = new ServiceResult();
+            try
+            {
+                var user = await _userManager.FindByNameAsync(username);
+                await _context.CustomerProfiles.AddAsync(new CustomerProfile()
+                {
+                    FirstName =  value.FirstName,
+                    LastName = value.LastName,
+                    PhoneNumber = value.PhoneNumber,
+                    Email = value.Email,
+                    DateOfBirth = value.DateOfBirth,
+                    JoiningDate = value.JoiningDate, //Todo: set it here
+                    //Gender = value.Gender,
+                    ApplicationUser = user,
+                    ApplicationUserId = user.Id
+                });
+            }
+            catch (Exception ex)
+            {
+                serviceResult.AddError(new ErrorMessage("", ex.Message));
+            }
+            return serviceResult;
         }
 
-        public Task<IServiceResult> UpdateProfile()
+        public async Task<IServiceResult> UpdateProfile(string username, CustomerProfileDto value)
         {
-            throw new NotImplementedException();
+            var serviceResult = new ServiceResult();
+            try
+            {
+                var user = await _userManager.FindByNameAsync(username);
+                if (user == null) //There is no such a user
+                {
+                    serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingUser.Code,
+                        ErrorCodesConstants.NotExistingUser.Message));
+                    return serviceResult;
+                }
+                var profile =
+                    _context.CustomerProfiles.FirstOrDefault(cp => cp.ApplicationUser.UserName.Equals(username));
+                if (profile == null) //there is no profile for this user
+                {
+                    serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
+                        ErrorCodesConstants.ManipulatingMissingEntity.Message));
+                    return serviceResult;
+                }
+
+                profile.FirstName = value.FirstName;
+                profile.LastName = value.LastName;
+                profile.PhoneNumber = value.PhoneNumber;
+                profile.Email = value.Email;
+                profile.DateOfBirth = value.DateOfBirth;
+                profile.JoiningDate = value.JoiningDate;
+                //Gender = value.Gender,
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                serviceResult.AddError(new ErrorMessage("", ex.Message));
+            }
+            return serviceResult;
         }
 
-        public Task<IServiceResult> DelteProfile()
+        public async Task<IServiceResult> DelteProfile(string username)
         {
-            throw new NotImplementedException();
+            var serviceResult = new ServiceResult();
+            try
+            {
+                var user = await _userManager.FindByNameAsync(username);
+                if (user == null) //There is no such a user
+                {
+                    serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingUser.Code,
+                        ErrorCodesConstants.NotExistingUser.Message));
+                    return serviceResult;
+                }
+                var profile =
+                    _context.CustomerProfiles.FirstOrDefault(cp => cp.ApplicationUser.UserName.Equals(username));
+                if (profile == null) //there is no profile for this user
+                {
+                    serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
+                        ErrorCodesConstants.ManipulatingMissingEntity.Message));
+                    return serviceResult;
+                }
+
+                _context.CustomerProfiles.Remove(profile);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                serviceResult.AddError(new ErrorMessage("", ex.Message));
+            }
+            return serviceResult;
         }
     }
 }

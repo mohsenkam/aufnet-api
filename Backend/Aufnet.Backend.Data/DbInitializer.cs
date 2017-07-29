@@ -12,134 +12,41 @@ namespace Aufnet.Backend.Data
 {
     public static class DbInitializer
     {
-        public static async Task Initialize(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task Initialize(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             context.Database.EnsureCreated();
 
             //create users
             if (!context.Users.Any())
             {
-                if (!await roleManager.RoleExistsAsync("SuperAdmin"))
+                if (!await roleManager.RoleExistsAsync("customer"))
                 {
-                    await roleManager.CreateAsync(new IdentityRole("SuperAdmin"));
-                    await roleManager.CreateAsync(new IdentityRole("admin-hr"));
-                    await roleManager.CreateAsync(new IdentityRole("admin-ops"));
-                    await roleManager.CreateAsync(new IdentityRole("cit"));
-                    //await roleManager.CreateAsync(new IdentityRole("General"));
+                    await roleManager.CreateAsync(new IdentityRole("customer"));
                 }
-                //Create User=admin
-                var superUser = new ApplicationUser
+                if (!await roleManager.RoleExistsAsync("merchant"))
                 {
-                    UserName = "sa",
-                    Email = "developers@switchlink.com.au",
-                    EmailConfirmed = true
-                };
-                var adminresult = await userManager.CreateAsync(superUser, "Potatohair51!");
-                await userManager.AddToRoleAsync(superUser, "SuperAdmin");
+                    await roleManager.CreateAsync(new IdentityRole("merchant"));
+                }
+                if (!await roleManager.RoleExistsAsync("ticket_attendant"))
+                {
+                    await roleManager.CreateAsync(new IdentityRole("ticket_attendant"));
+                }
+                if (!await roleManager.RoleExistsAsync("manager"))
+                {
+                    await roleManager.CreateAsync(new IdentityRole("manager"));
+                }
+                context.SaveChanges();
             }
-
-
-            //if (!context.Terminals.Any())
+            ////Create User=admin
+            //var superUser = new ApplicationUser
             //{
-            //    //terminal
-            //    context.Terminals.Add(new Terminal
-            //    {
-            //        TerminalId = "T00001",
-            //        Status = "OK"
-            //    });
-            //    context.Terminals.Add(new Terminal
-            //    {
-            //        TerminalId = "T00002",
-            //        Status = "OK"
-            //    });
-            //    context.Terminals.Add(new Terminal
-            //    {
-            //        TerminalId = "T00003",
-            //        Status = "OK"
-            //    });
-            //    context.Terminals.Add(new Terminal
-            //    {
-            //        TerminalId = "T00004",
-            //        Status = "OK"
-            //    });
-            //}
-
-            ////system configs
-            //if (!context.Configs.Any())
-            //{
-            //    context.Configs.Add(new SystemConfig
-            //    {
-            //        Key = ConfigKeys.DailyDiscrepancyLimit,
-            //        Value = "20"
-            //    });
-            //    context.Configs.Add(new SystemConfig
-            //    {
-            //        Key = ConfigKeys.EndOfShiftTradingDayStartHour,
-            //        Value = "14"
-            //    });
-            //    context.Configs.Add(new SystemConfig
-            //    {
-            //        Key = ConfigKeys.EndOfShiftTradingDayEndHour,
-            //        Value = "18"
-            //    });
-            //    context.Configs.Add(new SystemConfig
-            //    {
-            //        Key = ConfigKeys.EndOfDayHour,
-            //        Value = "17"
-            //    });
-            //}
-
-            ////import staff data
-            //if (!context.Staffs.Any())
-            //{
-            //    //create staffs
-            //    using (var csv = new CsvReader(File.OpenText(System.AppContext.BaseDirectory + "/Data/staff_database_v2.txt"), new CsvConfiguration
-            //    {
-            //        Delimiter = "\t"
-            //    }))
-            //    {
-            //        var cntNew = 0;
-            //        var cntExisting = 0;
-            //        var cntMatch = 0;
-            //        while (csv.Read())
-            //        {
-            //            var code = csv.GetField<string>(0);
-            //            var name = csv.GetField<string>(1);
-            //            //var pin = code.PadLeft(4, '0');
-
-            //            var existingStaff = context.Staffs.FirstOrDefault(x => x.Code == code);
-            //            if (existingStaff != null)
-            //            {
-            //                cntExisting++;
-            //                if (existingStaff.FullName == name)
-            //                    cntMatch++;
-            //                else
-            //                {
-            //                    Console.WriteLine($"Driver name does not macth with exisiting {code}");
-            //                }
-            //            }
-            //            else
-            //            {
-            //                cntNew++;
-            //                context.Staffs.Add(new Staff
-            //                {
-            //                    EffectiveDate = DateTime.UtcNow.ToTradingTimeFromUtc().DayStart(),
-            //                    FullName = name,
-            //                    Code = code,
-            //                    Roles = "Driver",
-            //                    Pin = "9999"
-            //                });
-            //            }
-
-            //        }
-
-            //        Console.WriteLine($"Total new {cntNew}, Exists: {cntExisting}, Matched: {cntMatch}");
-            //    }
-            //}
-
-            context.SaveChanges();
-
-           
+            //    UserName = "sa",
+            //    Email = "developers@switchlink.com.au",
+            //    EmailConfirmed = true
+            //};
+            //var adminresult = await userManager.CreateAsync(superUser, "Potatohair51!");
+            //await userManager.AddToRoleAsync(superUser, "SuperAdmin");
         }
     }
 }
