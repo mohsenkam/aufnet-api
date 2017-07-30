@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Aufnet.Backend.ApiServiceShared.Models;
+using Aufnet.Backend.ApiServiceShared.Models.Merchant;
+using Aufnet.Backend.ApiServiceShared.Models.Shared;
 using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.Data.Context;
+using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Data.Models.Entities.Merchant;
 using Aufnet.Backend.Data.Models.Entities.Shared;
 using Aufnet.Backend.Services.Base;
 using Aufnet.Backend.Services.Base.Exceptions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aufnet.Backend.Services
@@ -15,158 +18,145 @@ namespace Aufnet.Backend.Services
     public class MerchantProfilesService : IMerchantProfileService
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public MerchantProfilesService(ApplicationDbContext context)
+        public MerchantProfilesService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
 
-        public async Task<IServiceResult> CreateProfile(MerchantProfileDto merchantProfileDto)
+        public async Task<IGetServiceResult<MerchantProfileDto>> GetProfileAsync(string username)
         {
             var serviceResult = new ServiceResult();
-            if (String.IsNullOrEmpty(merchantProfileDto.BusinessName))
+            //validatio
+            var getResult = new GetServiceResult<MerchantProfileDto>();
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
             {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "BusinessName"));
-                return serviceResult;
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingUser.Code,
+                    ErrorCodesConstants.NotExistingUser.Message));
+                getResult.SetResult(serviceResult);
+                return getResult;
             }
-            if (String.IsNullOrEmpty(merchantProfileDto.AddressDto.City))
-            {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "City"));
-                return serviceResult;
-            }
-            if (String.IsNullOrEmpty(merchantProfileDto.AddressDto.Country))
-            {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "Country"));
-                return serviceResult;
-            }
-            if (String.IsNullOrEmpty(merchantProfileDto.AddressDto.Detail))
-            {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "Detail"));
-                return serviceResult;
-            }
-            if (String.IsNullOrEmpty(merchantProfileDto.AddressDto.State))
-            {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "State"));
-                return serviceResult;
-            }
+            var profile = _context.MerchantProfiles.Include(m=>m.Address).FirstOrDefault(cp => cp.ApplicationUser.UserName.Equals(username));
 
-            if (String.IsNullOrEmpty(merchantProfileDto.AddressDto.PostCode))
+            MerchantProfileDto mpDto;
+            if (profile == null)
+                mpDto = null;
+            else
             {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "State"));
-                return serviceResult;
-            }
-            var merchantProfile = new MerchantProfile
-            {
-                Address = new Address
+                mpDto = new MerchantProfileDto()
                 {
-                    City = merchantProfileDto.AddressDto.City,
-                    Country = merchantProfileDto.AddressDto.Country,
-                    PostCode = merchantProfileDto.AddressDto.PostCode,
-                    Detail = merchantProfileDto.AddressDto.Detail,
-                    State = merchantProfileDto.AddressDto.State
-                },
-                BusinessName = merchantProfileDto.BusinessName
-            };
-            
+                    AddressDto = new AddressDto
+                    {
+                        City = profile.Address.City,
+                        Country = profile.Address.Country,
+                        Detail = profile.Address.Detail,
+                        PostCode = profile.Address.PostCode,
+                        State = profile.Address.State,
+                        Id = profile.Address.Id,
+                        ApplicationUserId = profile.Address.ApplicationUserId
+                    },
+                    BusinessName = profile.BusinessName,
+                    
+                    //Gender todo: put in the proper place
+                };
+            }
+            getResult.SetData(mpDto);
+            return getResult;
+        }
+
+        public async Task<IServiceResult> CreateProfile(MerchantProfileDto value)
+        {
+            var serviceResult = new ServiceResult();
             try
             {
-                var result = _context.MerchantProfiles.Add(merchantProfile);
+                await _context.MerchantProfiles.AddAsync(new MerchantProfile()
+                {
+                    Address = new Address
+                    {
+                        City = value.AddressDto.City,
+                        Country = value.AddressDto.Country,
+                        Detail = value.AddressDto.Detail,
+                        PostCode = value.AddressDto.PostCode,
+                        State = value.AddressDto.State,
+                        Id = value.AddressDto.Id
+                    },
+                    BusinessName = value.BusinessName,
+                });
             }
-            catch (InvalidArgumentException exception)
+            catch (Exception ex)
             {
-                serviceResult.AddError(new ErrorMessage("", exception.Message));
-                return serviceResult;
+                serviceResult.AddError(new ErrorMessage("", ex.Message));
             }
-
             return serviceResult;
         }
 
-        public async Task<IServiceResult> UpdateProfile(string username, MerchantProfileDto newMerchantProfileDto)
+        public async Task<IServiceResult> UpdateProfile(string username, MerchantProfileDto value)
         {
             var serviceResult = new ServiceResult();
-
-            //validation
-            if (String.IsNullOrEmpty(username))
-            {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "username"));
-                return serviceResult;
-            }
-            if (String.IsNullOrEmpty(newMerchantProfileDto.BusinessName))
-            {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "BusinessName"));
-                return serviceResult;
-            }
-            if (String.IsNullOrEmpty(newMerchantProfileDto.AddressDto.City))
-            {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "City"));
-                return serviceResult;
-            }
-            if (String.IsNullOrEmpty(newMerchantProfileDto.AddressDto.Country))
-            {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "Country"));
-                return serviceResult;
-            }
-            if (String.IsNullOrEmpty(newMerchantProfileDto.AddressDto.Detail))
-            {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "Detail"));
-                return serviceResult;
-            }
-            if (String.IsNullOrEmpty(newMerchantProfileDto.AddressDto.State))
-            {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "State"));
-                return serviceResult;
-            }
-
-            if (String.IsNullOrEmpty(newMerchantProfileDto.AddressDto.PostCode))
-            {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "State"));
-                return serviceResult;
-            }
-            var oldmerchantProfile =
-                _context.MerchantProfiles.Include(m => m.ApplicationUser)
-                    .FirstOrDefault(m => m.ApplicationUser.UserName == username);
-            oldmerchantProfile.Address.City = newMerchantProfileDto.AddressDto.City;
-            oldmerchantProfile.Address.Country = newMerchantProfileDto.AddressDto.Country;
-            oldmerchantProfile.Address.PostCode = newMerchantProfileDto.AddressDto.PostCode;
-            oldmerchantProfile.Address.Detail = newMerchantProfileDto.AddressDto.Detail;
-            oldmerchantProfile.Address.State = newMerchantProfileDto.AddressDto.State;
-            oldmerchantProfile.BusinessName = newMerchantProfileDto.BusinessName;
-            
             try
             {
-                var result = _context.MerchantProfiles.Update(oldmerchantProfile);
+                var user = await _userManager.FindByNameAsync(username);
+                if (user == null) //There is no such a user
+                {
+                    serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingUser.Code,
+                        ErrorCodesConstants.NotExistingUser.Message));
+                    return serviceResult;
+                }
+                var profile =
+                    _context.MerchantProfiles.Include(m=>m.Address).FirstOrDefault(cp => cp.ApplicationUser.UserName.Equals(username));
+                if (profile == null) //there is no profile for this user
+                {
+                    serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
+                        ErrorCodesConstants.ManipulatingMissingEntity.Message));
+                    return serviceResult;
+                }
+
+                profile.Address.City = value.AddressDto.City;
+                profile.Address.Country = value.AddressDto.Country;
+                profile.Address.Detail = value.AddressDto.Detail;
+                profile.Address.PostCode = value.AddressDto.PostCode;
+                profile.Address.State = value.AddressDto.State;
+                _context.SaveChanges();
             }
-            catch (InvalidArgumentException exception)
+            catch (Exception ex)
             {
-                serviceResult.AddError(new ErrorMessage("", exception.Message));
-                return serviceResult;
+                serviceResult.AddError(new ErrorMessage("", ex.Message));
             }
-            
             return serviceResult;
         }
 
         public async Task<IServiceResult> DelteProfile(string username)
         {
             var serviceResult = new ServiceResult();
-            if (String.IsNullOrEmpty(username))
-            {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ArgumentMissing.Code, ErrorCodesConstants.ArgumentMissing.Message + "username"));
-                return serviceResult;
-            }
-            var merchantProfile =
-                _context.MerchantProfiles.Include(m => m.ApplicationUser)
-                    .FirstOrDefault(m => m.ApplicationUser.UserName == username);
             try
             {
-                var result = _context.MerchantProfiles.Remove(merchantProfile);
-            }
-            catch (InvalidArgumentException exception)
-            {
-                serviceResult.AddError(new ErrorMessage("", exception.Message));
-                return serviceResult;
-            }
+                var user = await _userManager.FindByNameAsync(username);
+                if (user == null) //There is no such a user
+                {
+                    serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingUser.Code,
+                        ErrorCodesConstants.NotExistingUser.Message));
+                    return serviceResult;
+                }
+                var profile =
+                    _context.MerchantProfiles.FirstOrDefault(cp => cp.ApplicationUser.UserName.Equals(username));
+                if (profile == null) //there is no profile for this user
+                {
+                    serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
+                        ErrorCodesConstants.ManipulatingMissingEntity.Message));
+                    return serviceResult;
+                }
 
+                _context.MerchantProfiles.Remove(profile);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                serviceResult.AddError(new ErrorMessage("", ex.Message));
+            }
             return serviceResult;
         }
     }

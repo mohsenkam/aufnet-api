@@ -140,7 +140,7 @@ namespace Aufnet.Backend.Api
 
             //app services
             services.AddScoped<ICustomerService, CustomersService>();
-            services.AddScoped<IMerchantsService, MerchantsService>();
+            services.AddScoped<IMerchantService, MerchantService>();
             services.AddScoped<ICustomerProfileService, CustomerProfilesService>();
             services.AddScoped<IEmailService, SendGridEmailService>();
             //services.AddScoped<IMessagingService, MessagingService>();
