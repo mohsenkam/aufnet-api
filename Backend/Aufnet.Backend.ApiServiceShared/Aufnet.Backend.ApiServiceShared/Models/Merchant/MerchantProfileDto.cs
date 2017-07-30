@@ -1,7 +1,6 @@
-﻿using System;
-using Aufnet.Backend.ApiServiceShared.Models.Shared;
+﻿using Aufnet.Backend.ApiServiceShared.Models.Shared;
 
-namespace Aufnet.Backend.ApiServiceShared.Models
+namespace Aufnet.Backend.ApiServiceShared.Models.Merchant
 {
     public class MerchantProfileDto
     {

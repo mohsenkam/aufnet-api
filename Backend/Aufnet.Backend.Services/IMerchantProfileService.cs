@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Aufnet.Backend.ApiServiceShared.Models;
+using Aufnet.Backend.ApiServiceShared.Models.Merchant;
 using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.Services.Base;
 
@@ -7,8 +8,9 @@ namespace Aufnet.Backend.Services
 {
     public interface IMerchantProfileService
     {
-        Task<IServiceResult> CreateProfile(MerchantProfileDto merchantProfileDto);
-        Task<IServiceResult> UpdateProfile(string username, MerchantProfileDto newMerchantProfileDto);
+        Task<IGetServiceResult<MerchantProfileDto>> GetProfileAsync(string username);
+        Task<IServiceResult> CreateProfile(MerchantProfileDto value);
+        Task<IServiceResult> UpdateProfile(string username, MerchantProfileDto value);
         Task<IServiceResult> DelteProfile(string username);
     }
 }

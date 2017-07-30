@@ -22,6 +22,8 @@ namespace Aufnet.Backend.Data.Models.Entities.Shared
         public string Detail { get; set; }
 
         public string PostCode { get; set; }
-        
+        public string ApplicationUserId { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
+
     }
 }
