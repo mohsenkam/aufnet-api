@@ -67,6 +67,13 @@ namespace Aufnet.Backend.Services
             try
             {
                 var user = await _userManager.FindByNameAsync(username);
+                if (user == null)
+                {
+                    serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingUser.Code,
+                        ErrorCodesConstants.NotExistingUser.Message));
+                    
+                    return serviceResult;
+                }
                 await _context.CustomerProfiles.AddAsync(new CustomerProfile()
                 {
                     FirstName =  value.FirstName,
@@ -79,11 +86,13 @@ namespace Aufnet.Backend.Services
                     ApplicationUser = user,
                     ApplicationUserId = user.Id
                 });
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
                 serviceResult.AddError(new ErrorMessage("", ex.Message));
             }
+
             return serviceResult;
         }
 

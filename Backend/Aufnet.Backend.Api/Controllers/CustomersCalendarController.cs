@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aufnet.Backend.Api.Controllers
 {
-    [Route("api/customers/{username}/calendar")]
+    [Route("api/CustomersCalendar/{username}/calendar")]
     public class CustomersCalendarController: BaseController
     {
         private readonly ICustomerCalendarService _customerCalendarService;
