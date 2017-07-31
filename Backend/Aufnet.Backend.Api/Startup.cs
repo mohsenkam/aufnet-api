@@ -225,7 +225,8 @@ namespace Aufnet.Backend.Api
             app.UseMvcWithDefaultRoute();
 
             app.UseMvc(routes => routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}"));
-
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureCreated();
 
             //todo: remove test code
             //var dscSvc = app.ApplicationServices.GetRequiredService<IDscProcessorService>();
