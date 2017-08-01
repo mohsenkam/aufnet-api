@@ -44,7 +44,7 @@ namespace Aufnet.Backend.Services
                 mcDto = null;
             else
             {
-                var eventDtos = events.MerchantEvents.Select(e => new MerchantEventDto()
+                var eventDtos = events.MerchantEvents.Select(e => new MerchantEventsDto()
                 {
                     Title = e.Title,
                     MerchantUserName = e.Merchant.UserName
@@ -80,14 +80,13 @@ namespace Aufnet.Backend.Services
                 }
                 else
                 {
-                    var merchantEvent = _context.MerchantEvents.FirstOrDefault(me => me.Id == merchantEventId);
+                    var merchantEvent = _context.MerchantEventses.FirstOrDefault(me => me.Id == merchantEventId);
                     if (merchantEvent == null)
                     {
                         serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.InvalidArgument.Code,
                             ErrorCodesConstants.InvalidArgument.Message + "event doesn't exist"));
                         return serviceResult;
                     }
-
                     var count = bookmarkedEvent.MerchantEvents.Count(me => me.Merchant.Id.Equals(merchantEvent.Merchant.Id));
                     if (count > 0) //This event is already bookmarked
                     {
@@ -129,7 +128,7 @@ namespace Aufnet.Backend.Services
                 }
                 else
                 {
-                    var merchantEvent = _context.MerchantEvents.FirstOrDefault(me => me.Id == merchantEventId);
+                    var merchantEvent = _context.MerchantEventses.FirstOrDefault(me => me.Id == merchantEventId);
                     if (merchantEvent == null)
                     {
                         serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.InvalidArgument.Code,

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Aufnet.Backend.ApiServiceShared.Models.Customer;
+using Aufnet.Backend.ApiServiceShared.Models.Merchant;
 using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.Data.Context;
 using Aufnet.Backend.Data.Models.Entities;
@@ -45,7 +46,7 @@ namespace Aufnet.Backend.Services
                 ccDto = null;
             else
             {
-                var eventDtos = events.MerchantEvents.Select(e => new EventDto()
+                var eventDtos = events.MerchantEvents.Select(e => new MerchantEventsDto() 
                 {
                     Title = e.Title,
                     MerchantUserName = e.Merchant.UserName
@@ -81,7 +82,7 @@ namespace Aufnet.Backend.Services
                 }
                 else
                 {
-                    var merchantEvent = _context.MerchantEvents.FirstOrDefault(me => me.Id == merchantEventId);
+                    var merchantEvent = _context.MerchantEventses.FirstOrDefault(me => me.Id == merchantEventId);
                     if (merchantEvent == null)
                     {
                         serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.InvalidArgument.Code,
@@ -130,7 +131,7 @@ namespace Aufnet.Backend.Services
                 }
                 else
                 {
-                    var merchantEvent = _context.MerchantEvents.FirstOrDefault(me => me.Id == merchantEventId);
+                    var merchantEvent = _context.MerchantEventses.FirstOrDefault(me => me.Id == merchantEventId);
                     if (merchantEvent == null)
                     {
                         serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.InvalidArgument.Code,
