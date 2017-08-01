@@ -24,11 +24,19 @@ namespace Aufnet.Backend.Services.Shared
 
         public async Task SendEmailAsync(EmailModel email)
         {
-            var myMessage = GetMessage(email);
-            //TODO: GET THE SECRET KEY PROPERLY
-            var client = new SendGridClient("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");
+            try
+            {
+                var myMessage = GetMessage(email);
+                //TODO: GET THE SECRET KEY PROPERLY
+                var client = new SendGridClient("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");
 
-            await client.SendEmailAsync(myMessage);
+                await client.SendEmailAsync(myMessage);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
         }
 
         private SendGridMessage GetMessage( EmailModel emailModel )

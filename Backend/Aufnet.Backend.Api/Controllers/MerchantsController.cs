@@ -26,6 +26,27 @@ namespace Aufnet.Backend.Api.Controllers
             _merchantService = merchantService;
         }
 
+        // GET api/customers/john/profile
+        [HttpPost("searchbyaddress")]
+        [ValidateModel]
+        [AllowAnonymous]
+        public async Task<IActionResult> SearchByAddress([FromBody]AddressDto addressDto)
+        {
+            //logic
+            var result = await _merchantService.SearchMerchantByAddress(addressDto);
+            if (result.HasError())
+            {
+                foreach (var error in result.GetResult().GetErrors())
+                {
+                    ModelState.AddModelError(error.Code, error.Message);
+                }
+
+                return new ValidationFailedResult(ModelState);
+            }
+
+            return Ok(result.GetData());
+        }
+
         //POST api/merchants
         [HttpPost]
         [ValidateModel]

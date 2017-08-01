@@ -5,7 +5,7 @@ namespace Aufnet.Backend.ApiServiceShared.Models
 {
     public class CustomerSignUpDto
     {
-
+        [EmailAddress]
         [Required]
         public string Email { get; set; }
 

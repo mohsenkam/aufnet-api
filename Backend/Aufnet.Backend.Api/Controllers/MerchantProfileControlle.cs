@@ -41,13 +41,14 @@ namespace Aufnet.Backend.Api.Controllers
             return Ok(result.GetData());
         }
 
+
         // POST api/merchants/john/profile
         [HttpPost]
         [ValidateModel]
         [AllowAnonymous]
         public async Task<IActionResult> Post(string username, [FromBody]MerchantProfileDto value)
         {
-            var result = await _merchantProfileService.CreateProfile(value);
+            var result = await _merchantProfileService.CreateProfile(username,value);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
@@ -67,6 +68,23 @@ namespace Aufnet.Backend.Api.Controllers
         public async Task<IActionResult> Put(string username, [FromBody]MerchantProfileDto value)
         {
             var result = await _merchantProfileService.UpdateProfile(username, value);
+            if (result.HasError())
+            {
+                foreach (var error in result.GetErrors())
+                {
+                    ModelState.AddModelError(error.Code, error.Message);
+                }
+
+                return new ValidationFailedResult(ModelState);
+            }
+            return Ok();
+        }
+
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(string username)
+        {
+            var result = await _merchantProfileService.DelteProfile(username);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
