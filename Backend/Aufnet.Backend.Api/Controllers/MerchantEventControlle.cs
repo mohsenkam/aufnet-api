@@ -11,11 +11,11 @@ namespace Aufnet.Backend.Api.Controllers
     [Route("api/merchants/{username}/event")]
     public class MerchantEventControlle : BaseController
     {
-        private readonly IMerchantEventsService _merchantEventControlle;
+        private readonly IMerchantEventsService _merchantEventService;
 
         public MerchantEventControlle(IMerchantEventsService merchantEventService)
         {
-            _merchantEventControlle = merchantEventService;
+            _merchantEventService = merchantEventService;
         }
 
         // GET api/merchants/john/event
@@ -23,7 +23,7 @@ namespace Aufnet.Backend.Api.Controllers
         public async Task<IActionResult> GetAsync(string username)
         {
             //logic
-            var result = await _merchantEventControlle.GetEvents(username);
+            var result = await _merchantEventService.GetEvents(username);
             if (result.HasError())
             {
                 foreach (var error in result.GetResult().GetErrors())
@@ -43,7 +43,7 @@ namespace Aufnet.Backend.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Post(string username, [FromBody]MerchantEventsDto value)
         {
-            var result = await _merchantEventControlle.CreateEvent(username, value);
+            var result = await _merchantEventService.CreateEvent(username, value);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
@@ -62,7 +62,7 @@ namespace Aufnet.Backend.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Put(string username, [FromBody]MerchantEventsDto value)
         {
-            var result = await _merchantEventControlle.UpdateEvent(username, value);
+            var result = await _merchantEventService.UpdateEvent(username, value);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
@@ -70,6 +70,22 @@ namespace Aufnet.Backend.Api.Controllers
                     ModelState.AddModelError(error.Code, error.Message);
                 }
 
+                return new ValidationFailedResult(ModelState);
+            }
+            return Ok();
+        }
+
+        // Delete api/customers/john
+        [HttpDelete("{merchantEventId}")]
+        public async Task<IActionResult> Delete(string username, int merchantEventId)
+        {
+            var result = await _merchantEventService.DeleteEvent(username, merchantEventId);
+            if (result.HasError())
+            {
+                foreach (var error in result.GetErrors())
+                {
+                    ModelState.AddModelError(error.Code, error.Message);
+                }
                 return new ValidationFailedResult(ModelState);
             }
             return Ok();
