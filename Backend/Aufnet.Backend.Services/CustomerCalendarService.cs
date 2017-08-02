@@ -153,7 +153,6 @@ namespace Aufnet.Backend.Services
                     bookmarkedEvent.MerchantEvents.Remove(merchantEvent);
                     _context.SaveChanges();
                 }
-
             }
             catch (Exception ex)
             {

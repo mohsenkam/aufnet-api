@@ -7,8 +7,8 @@ namespace Aufnet.Backend.Services
     public interface IMerchantEventsService
     {
         Task<IGetServiceResult<MerchantEventsDto>> GetEvents(string username);
-        Task<IServiceResult> AddEvent(string username, MerchantEventsDto value);
+        Task<IServiceResult> CreateEvent(string username, MerchantEventsDto value);
         Task<IServiceResult> UpdateEvent(string username, MerchantEventsDto value);
-        Task<IServiceResult> RemoveEvent(string username, int merchantEventId);
+        Task<IServiceResult> DeleteEvent(string username, int merchantEventId);
     }
 }

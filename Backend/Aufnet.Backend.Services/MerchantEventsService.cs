@@ -2,18 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Aufnet.Backend.ApiServiceShared.Shared;
-using Aufnet.Backend.ApiServiceShared.Models;
 using Aufnet.Backend.ApiServiceShared.Models.Merchant;
-using Aufnet.Backend.ApiServiceShared.Models.Shared;
 using Aufnet.Backend.Data.Context;
-using Aufnet.Backend.Data.Models.Entities;
 using Aufnet.Backend.Data.Models.Entities.Event;
-using Aufnet.Backend.Services.Base;
 using Microsoft.AspNetCore.Identity;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Data.Models.Entities.Merchant;
-using Aufnet.Backend.Services.Base.Exceptions;
-using Aufnet.Backend.Services.Shared;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Aufnet.Backend.Services
@@ -23,11 +18,10 @@ namespace Aufnet.Backend.Services
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public MerchantEventsService(UserManager<ApplicationUser> userManager, ApplicationDbContext context,
-            IEmailService emailService)
+        public MerchantEventsService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _userManager = userManager;
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IGetServiceResult<MerchantEventsDto>> GetEvents(string username)
@@ -55,20 +49,23 @@ namespace Aufnet.Backend.Services
                 {
                     MerchantProductDto =  new MerchantProductDto
                     {
-                        ProductName = merchantevents.Title,
-                        Description = merchantevents.Description,
-                        //ApplicationUserId = merchantevents.Product.ApplicationUserId
+                        ProductName = merchantevents.MerchantProduct.ProductName,
+                        Description = merchantevents.MerchantProduct.Description,
+                        IsAvailable = merchantevents.MerchantProduct.IsAvailable,
+                        Discount = merchantevents.MerchantProduct.Discount,
+                        ApplicationUserId = merchantevents.MerchantProduct.ApplicationUserId
                     },
                     Title = merchantevents.Title,
-
-                    //Gender todo: put in the proper place
+                    Description = merchantevents.Description,
+                    StarDate = merchantevents.StarDate,
+                    EndDate = merchantevents.EndDate,
                 };
             }
             getResult.SetData(meDto);
             return getResult;
         }
 
-        public async Task<IServiceResult> RemoveEvent(string username, int merchantEventId)
+        public async Task<IServiceResult> DeleteEvent(string username, int merchantEventId)
         {
             var serviceResult = new ServiceResult();
             try
@@ -88,9 +85,18 @@ namespace Aufnet.Backend.Services
                         ErrorCodesConstants.ManipulatingMissingEntity.Message));
                     return serviceResult;
                 }
-
-                _context.MerchantEvents.Remove(mevant);
-                _context.SaveChanges();
+                else
+                {
+                    var merchantEvent = _context.MerchantEvents.FirstOrDefault(me => me.Id == merchantEventId);
+                    if (merchantEvent == null)
+                    {
+                        serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.InvalidArgument.Code,
+                            ErrorCodesConstants.InvalidArgument.Message + "event doesn't exist"));
+                        return serviceResult;
+                    }
+                    _context.MerchantEvents.Remove(merchantEvent);
+                    _context.SaveChanges();
+                }
             }
             catch (Exception ex)
             {
@@ -99,7 +105,7 @@ namespace Aufnet.Backend.Services
             return serviceResult;
         }
 
-        public async Task<IServiceResult> AddEvent(string username, MerchantEventsDto value)
+        public async Task<IServiceResult> CreateEvent(string username, MerchantEventsDto value)
         {
             var serviceResult = new ServiceResult();
             try
@@ -107,6 +113,14 @@ namespace Aufnet.Backend.Services
                 var user = await _userManager.FindByNameAsync(username);
                 await _context.MerchantEvents.AddAsync(new MerchantEvents()
                 {
+                    MerchantProduct = new MerchantProduct
+                    {
+                        ProductName = value.MerchantProductDto.ProductName,
+                        Description = value.MerchantProductDto.Description,
+                        IsAvailable = value.MerchantProductDto.IsAvailable,
+                        Discount = value.MerchantProductDto.Discount,
+                        Id = value.MerchantProductDto.Id
+                    },
                     Title = value.Title,
                     Description = value.Description,
                     StarDate = value.StarDate,
@@ -135,21 +149,24 @@ namespace Aufnet.Backend.Services
                         ErrorCodesConstants.NotExistingUser.Message));
                     return serviceResult;
                 }
-                //var mevent =
-                //    _context.MerchantEvents.Include(p => p.Product).FirstOrDefault(me => me.ApplicationUser.UserName.Equals(username));
-                //if (mevent == null) //there is no event for this user
-                //{
-                //    serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
-                //        ErrorCodesConstants.ManipulatingMissingEntity.Message));
-                //    return serviceResult;
-                //}
+                var mevent =
+                    _context.MerchantEvents.Include(p => p.MerchantProduct).FirstOrDefault(me => me.ApplicationUser.UserName.Equals(username));
+                if (mevent == null) //there is no event for this user
+                {
+                    serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
+                        ErrorCodesConstants.ManipulatingMissingEntity.Message));
+                    return serviceResult;
+                }
 
-                //mevent..pro.City = value.AddressDto.City;
-                //mevent.Address.Country = value.AddressDto.Country;
-                //mevent.Address.Detail = value.AddressDto.Detail;
-                //mevent.Address.PostCode = value.AddressDto.PostCode;
-                //mevent.Address.State = value.AddressDto.State;
-                //_context.SaveChanges();
+                mevent.Title = value.Title;
+                mevent.Description = value.Description;
+                mevent.StarDate = value.StarDate;
+                mevent.EndDate = value.EndDate;
+                mevent.MerchantProduct.Description =  value.MerchantProductDto.Description;
+                mevent.MerchantProduct.IsAvailable = value.MerchantProductDto.IsAvailable;
+                mevent.MerchantProduct.Discount = value.MerchantProductDto.Discount;
+
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {

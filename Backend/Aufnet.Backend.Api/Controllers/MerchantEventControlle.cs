@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Aufnet.Backend.Api.ActionFilters;
 using Aufnet.Backend.Api.Validation;
-using Aufnet.Backend.ApiServiceShared.Models;
 using Aufnet.Backend.ApiServiceShared.Models.Merchant;
 using Aufnet.Backend.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aufnet.Backend.Api.Controllers
@@ -47,7 +43,7 @@ namespace Aufnet.Backend.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Post(string username, [FromBody]MerchantEventsDto value)
         {
-            var result = await _merchantEventControlle.AddEvent(username, value);
+            var result = await _merchantEventControlle.CreateEvent(username, value);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
