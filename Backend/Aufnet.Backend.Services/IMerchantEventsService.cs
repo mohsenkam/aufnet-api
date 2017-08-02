@@ -8,10 +8,10 @@ namespace Aufnet.Backend.Services
 {
     public interface IMerchantEventsService
     {
-       
-        //Task<IGetServiceResult<MerchantEventsDto>> GetProfileAsync(string username);
-        //Task<IServiceResult> CreateEvent(string username, MerchantEventsDto value);
-        //Task<IServiceResult> UpdateEvent(string username, MerchantEventsDto value);
-        //Task<IServiceResult> DeleteEvent(string username);
+
+        Task<IGetServiceResult<MerchantEventsDto>> GetEvents(string username);
+        Task<IServiceResult> AddEvent(string username, MerchantEventsDto value);
+        Task<IServiceResult> UpdateEvent(string username, MerchantEventsDto value);
+        Task<IServiceResult> RemoveEvent(string username, int merchantEventId);
     }
 }

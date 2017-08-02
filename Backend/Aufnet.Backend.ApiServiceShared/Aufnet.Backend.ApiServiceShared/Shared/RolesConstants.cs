@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Aufnet.Backend.Api.Shared
+namespace Aufnet.Backend.ApiServiceShared.Shared
 {
     public static class RolesConstants
     {

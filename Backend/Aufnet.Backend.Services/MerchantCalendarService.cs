@@ -47,7 +47,7 @@ namespace Aufnet.Backend.Services
                 var eventDtos = events.MerchantEvents.Select(e => new MerchantEventsDto()
                 {
                     Title = e.Title,
-                    MerchantUserName = e.Merchant.UserName
+                    MerchantUserName = e.ApplicationUser.UserName
                 }).ToList();
                 mcDto = new MerchantCalendarDto()
                 {
@@ -80,14 +80,14 @@ namespace Aufnet.Backend.Services
                 }
                 else
                 {
-                    var merchantEvent = _context.MerchantEventses.FirstOrDefault(me => me.Id == merchantEventId);
+                    var merchantEvent = _context.MerchantEvents.FirstOrDefault(me => me.Id == merchantEventId);
                     if (merchantEvent == null)
                     {
                         serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.InvalidArgument.Code,
                             ErrorCodesConstants.InvalidArgument.Message + "event doesn't exist"));
                         return serviceResult;
                     }
-                    var count = bookmarkedEvent.MerchantEvents.Count(me => me.Merchant.Id.Equals(merchantEvent.Merchant.Id));
+                    var count = bookmarkedEvent.MerchantEvents.Count(me => me.ApplicationUser.Id.Equals(merchantEvent.ApplicationUser.Id));
                     if (count > 0) //This event is already bookmarked
                     {
                         serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.AddingDuplicateEntry.Code,
@@ -128,7 +128,7 @@ namespace Aufnet.Backend.Services
                 }
                 else
                 {
-                    var merchantEvent = _context.MerchantEventses.FirstOrDefault(me => me.Id == merchantEventId);
+                    var merchantEvent = _context.MerchantEvents.FirstOrDefault(me => me.Id == merchantEventId);
                     if (merchantEvent == null)
                     {
                         serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.InvalidArgument.Code,
@@ -136,7 +136,7 @@ namespace Aufnet.Backend.Services
                         return serviceResult;
                     }
 
-                    var count = bookmarkedEvent.MerchantEvents.Count(me => me.Merchant.Id.Equals(merchantEvent.Merchant.Id));
+                    var count = bookmarkedEvent.MerchantEvents.Count(me => me.ApplicationUser.Id.Equals(merchantEvent.ApplicationUser.Id));
                     if (count == 0) //This event is not bookmarked
                     {
                         serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.AddingDuplicateEntry.Code,

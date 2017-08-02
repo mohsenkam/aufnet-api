@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Aufnet.Backend.Api.ActionFilters;
-using Aufnet.Backend.Api.Shared;
+//using Aufnet.Backend.Api.Shared;
 using Aufnet.Backend.Api.Validation;
 using Aufnet.Backend.ApiServiceShared.Models.Customer;
 using Aufnet.Backend.ApiServiceShared.Models.Merchant;

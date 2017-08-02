@@ -1,5 +1,6 @@
 ﻿using Aufnet.Backend.ApiServiceShared.Models.Shared;
 using System;
+using System.Collections.Generic;
 
 namespace Aufnet.Backend.ApiServiceShared.Models.Merchant
 {
@@ -10,8 +11,9 @@ namespace Aufnet.Backend.ApiServiceShared.Models.Merchant
         public DateTime StarDate { get; set; }
         public DateTime EndDate { get; set; }
         public string MerchantUserName { get; set; }
-       
 
-        public virtual MerchantProfileDto MerchantProfileDto { get; set; }
+       
+       
+        public virtual MerchantProductDto MerchantProductDto { get; set; }
     }
 }
