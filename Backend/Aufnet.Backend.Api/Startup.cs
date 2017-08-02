@@ -142,6 +142,7 @@ namespace Aufnet.Backend.Api
             services.AddScoped<ICustomerService, CustomersService>();
             services.AddScoped<IMerchantService, MerchantService>();
             services.AddScoped<ICustomerProfileService, CustomerProfilesService>();
+            services.AddScoped<IMerchantProfileService, MerchantProfilesService>();
             services.AddScoped<IEmailService, SendGridEmailService>();
             //services.AddScoped<IMessagingService, MessagingService>();
             //services.AddTransient<IDscProcessorService, DscProcessorService>();
@@ -181,8 +182,10 @@ namespace Aufnet.Backend.Api
             var dbContext = app.ApplicationServices.GetRequiredService<ApplicationDbContext>();
             var userManager = app.ApplicationServices.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = app.ApplicationServices.GetRequiredService<RoleManager<IdentityRole>>();
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureCreated();
             DbInitializer.Initialize(dbContext, userManager, roleManager).Wait();
-
+            
             ////init messaging
             //var msgSvc = app.ApplicationServices.GetRequiredService<IMessagingService>();
             //msgSvc.InitMessaging();

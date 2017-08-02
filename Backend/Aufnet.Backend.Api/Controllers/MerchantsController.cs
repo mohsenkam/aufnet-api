@@ -26,7 +26,7 @@ namespace Aufnet.Backend.Api.Controllers
             _merchantService = merchantService;
         }
 
-        // GET api/customers/john/profile
+        //POST api/merchants/searchbyaddress
         [HttpPost("searchbyaddress")]
         [ValidateModel]
         [AllowAnonymous]

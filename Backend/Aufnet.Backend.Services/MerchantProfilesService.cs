@@ -89,8 +89,6 @@ namespace Aufnet.Backend.Services
                         Detail = value.AddressDto.Detail,
                         PostCode = value.AddressDto.PostCode,
                         State = value.AddressDto.State,
-                        ApplicationUserId = user.Id,
-                        ApplicationUser = user
                     },
                     BusinessName = value.BusinessName,
                     ApplicationUserId = user.Id,
@@ -154,18 +152,16 @@ namespace Aufnet.Backend.Services
                     return serviceResult;
                 }
                 var profile =
-                    _context.MerchantProfiles.FirstOrDefault(cp => cp.ApplicationUser.UserName.Equals(username));
+                    _context.MerchantProfiles.Include(mp=>mp.Address).FirstOrDefault(cp => cp.ApplicationUser.UserName.Equals(username));
                 if (profile == null) //there is no profile for this user
                 {
                     serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
                         ErrorCodesConstants.ManipulatingMissingEntity.Message));
                     return serviceResult;
                 }
-                var address =
-                    _context.Addresses.FirstOrDefault(cp => cp.ApplicationUser.UserName.Equals(username));
-                if (address != null)
+                if (profile.Address != null)
                 {
-                    _context.Addresses.Remove(address);
+                    _context.Addresses.Remove(profile.Address);
                 }
                 _context.MerchantProfiles.Remove(profile);
                 _context.SaveChanges();

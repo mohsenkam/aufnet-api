@@ -81,7 +81,7 @@ namespace Aufnet.Backend.Services
                     LastName = value.LastName,
                     PhoneNumber = value.PhoneNumber,
                     Email = value.Email,
-                    DateOfBirth = DateTime.Now,
+                    DateOfBirth = value.DateOfBirth,
                     JoiningDate = value.JoiningDate, //Todo: set it here
                     Gender = (Gender) value.Gender,
                     ApplicationUser = user,
