@@ -18,7 +18,7 @@
     "Aufnet.Backend.Api": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/Merchants",
+      "launchUrl": "api/Values",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

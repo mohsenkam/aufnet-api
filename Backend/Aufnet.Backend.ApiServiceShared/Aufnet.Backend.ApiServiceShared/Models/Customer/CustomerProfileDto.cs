@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Aufnet.Backend.ApiServiceShared.Models.Shared;
 
 namespace Aufnet.Backend.ApiServiceShared.Models.Customer
@@ -12,7 +13,7 @@ namespace Aufnet.Backend.ApiServiceShared.Models.Customer
         public DateTime DateOfBirth { get; set; }
 
         public DateTime JoiningDate { get; set; }
-
+        [EmailAddress]
         public string Email { get; set; }
 
         public string PhoneNumber { get; set; }

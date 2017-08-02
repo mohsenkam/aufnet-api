@@ -137,6 +137,7 @@ namespace Aufnet.Backend.Services
             }
 
             var result = await _userManager.ChangePasswordAsync(user, value.CurrentPassword, value.NewPassword);
+            //_context.SaveChanges();
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)

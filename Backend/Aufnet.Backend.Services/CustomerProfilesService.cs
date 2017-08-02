@@ -2,12 +2,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Aufnet.Backend.ApiServiceShared.Models.Customer;
+using Aufnet.Backend.ApiServiceShared.Models.Shared;
 using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.Data.Context;
 using Aufnet.Backend.Data.Models.Entities.Customer;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Services.Base;
 using Microsoft.AspNetCore.Identity;
+using Gender = Aufnet.Backend.Data.Models.Entities.Shared.Gender;
 
 namespace Aufnet.Backend.Services
 {
@@ -21,7 +23,6 @@ namespace Aufnet.Backend.Services
             _context = context;
             _userManager = userManager;
         }
-
 
         public async Task<IGetServiceResult<CustomerProfileDto>> GetProfileAsync(string username)
         {
@@ -53,7 +54,7 @@ namespace Aufnet.Backend.Services
                     DateOfBirth = profile.DateOfBirth,
                     JoiningDate = profile.JoiningDate,
                     Email = profile.Email,
-                    PhoneNumber = profile.Email,
+                    PhoneNumber = profile.PhoneNumber,
                     //Gender todo: put in the proper place
                 };
             }
@@ -67,7 +68,14 @@ namespace Aufnet.Backend.Services
             try
             {
                 var user = await _userManager.FindByNameAsync(username);
-                await _context.CustomerProfiles.AddAsync(new CustomerProfile()
+                if (user == null)
+                {
+                    serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingUser.Code,
+                        ErrorCodesConstants.NotExistingUser.Message));
+                    
+                    return serviceResult;
+                }
+               await _context.CustomerProfiles.AddAsync(new CustomerProfile()
                 {
                     FirstName =  value.FirstName,
                     LastName = value.LastName,
@@ -75,15 +83,17 @@ namespace Aufnet.Backend.Services
                     Email = value.Email,
                     DateOfBirth = value.DateOfBirth,
                     JoiningDate = value.JoiningDate, //Todo: set it here
-                    //Gender = value.Gender,
+                    Gender = (Gender) value.Gender,
                     ApplicationUser = user,
                     ApplicationUserId = user.Id
                 });
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
                 serviceResult.AddError(new ErrorMessage("", ex.Message));
             }
+
             return serviceResult;
         }
 
@@ -114,7 +124,7 @@ namespace Aufnet.Backend.Services
                 profile.Email = value.Email;
                 profile.DateOfBirth = value.DateOfBirth;
                 profile.JoiningDate = value.JoiningDate;
-                //Gender = value.Gender,
+                profile.Gender = (Gender)value.Gender;
                 _context.SaveChanges();
             }
             catch (Exception ex)

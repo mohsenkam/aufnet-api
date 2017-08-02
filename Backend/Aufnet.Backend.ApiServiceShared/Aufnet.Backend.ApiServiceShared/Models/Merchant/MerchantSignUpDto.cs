@@ -5,6 +5,7 @@ namespace Aufnet.Backend.ApiServiceShared.Models.Merchant
 {
     public class MerchantSignUpDto
     {
+        [EmailAddress]
         [Required]
         public string Email { get; set; }
 
