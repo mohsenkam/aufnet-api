@@ -9,7 +9,5 @@ namespace Aufnet.Backend.ApiServiceShared.Models.Merchant
         public bool IsAvailable { get; set; }
         public int Discount { get; set; }
 
-        //public string ApplicationUserId { get; set; }
-        //public virtual MerchantEventsDto MerchantEventsDto { get; set; }
     }
 }
