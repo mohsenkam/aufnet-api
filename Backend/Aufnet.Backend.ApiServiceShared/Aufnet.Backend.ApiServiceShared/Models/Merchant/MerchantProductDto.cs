@@ -8,8 +8,8 @@ namespace Aufnet.Backend.ApiServiceShared.Models.Merchant
         public string Description { get; set; }
         public bool IsAvailable { get; set; }
         public int Discount { get; set; }
-        public string ApplicationUserId { get; set; }
 
-        public virtual MerchantEventsDto MerchantEventsDto { get; set; }
+        //public string ApplicationUserId { get; set; }
+        //public virtual MerchantEventsDto MerchantEventsDto { get; set; }
     }
 }

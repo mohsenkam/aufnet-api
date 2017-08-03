@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.ApiServiceShared.Models.Merchant;
 using Aufnet.Backend.Data.Context;
-using Aufnet.Backend.Data.Models.Entities.Event;
 using Microsoft.AspNetCore.Identity;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Data.Models.Entities.Merchant;
@@ -24,7 +23,7 @@ namespace Aufnet.Backend.Services
             _userManager = userManager;
         }
 
-        public async Task<IGetServiceResult<MerchantEventsDto>> GetEvents(string username)
+        public async Task<IGetServiceResult<MerchantEventsDto>> GetEventAsync(string username)
         {
             var serviceResult = new ServiceResult();
 
@@ -53,7 +52,7 @@ namespace Aufnet.Backend.Services
                         Description = merchantevents.MerchantProduct.Description,
                         IsAvailable = merchantevents.MerchantProduct.IsAvailable,
                         Discount = merchantevents.MerchantProduct.Discount,
-                        ApplicationUserId = merchantevents.MerchantProduct.ApplicationUserId
+                        //ApplicationUserId = merchantevents.MerchantProduct.ApplicationUserId
                     },
                     Title = merchantevents.Title,
                     Description = merchantevents.Description,
@@ -111,7 +110,14 @@ namespace Aufnet.Backend.Services
             try
             {
                 var user = await _userManager.FindByNameAsync(username);
-                await _context.MerchantEvents.AddAsync(new MerchantEvents()
+                if (user == null)
+                {
+                    serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingUser.Code,
+                        ErrorCodesConstants.NotExistingUser.Message));
+
+                    return serviceResult;
+                }
+                await _context.MerchantEvents.AddAsync(new MerchantEvent()
                 {
                     MerchantProduct = new MerchantProduct
                     {

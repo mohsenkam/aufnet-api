@@ -9,11 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aufnet.Backend.Api.Controllers
 {
     [Route("api/merchants/{username}/event")]
-    public class MerchantEventControlle : BaseController
+    public class MerchantEventController : BaseController
     {
         private readonly IMerchantEventsService _merchantEventService;
 
-        public MerchantEventControlle(IMerchantEventsService merchantEventService)
+        public MerchantEventController(IMerchantEventsService merchantEventService)
         {
             _merchantEventService = merchantEventService;
         }
@@ -23,7 +23,7 @@ namespace Aufnet.Backend.Api.Controllers
         public async Task<IActionResult> GetAsync(string username)
         {
             //logic
-            var result = await _merchantEventService.GetEvents(username);
+            var result = await _merchantEventService.GetEventAsync(username);
             if (result.HasError())
             {
                 foreach (var error in result.GetResult().GetErrors())
@@ -75,7 +75,7 @@ namespace Aufnet.Backend.Api.Controllers
             return Ok();
         }
 
-        // Delete api/customers/john
+        // Delete api/merchants/john/event
         [HttpDelete("{merchantEventId}")]
         public async Task<IActionResult> Delete(string username, int merchantEventId)
         {

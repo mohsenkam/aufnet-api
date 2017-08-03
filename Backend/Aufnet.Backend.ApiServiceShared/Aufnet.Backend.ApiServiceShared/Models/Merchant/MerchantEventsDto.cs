@@ -1,5 +1,5 @@
 ﻿using System;
-
+using Aufnet.Backend.ApiServiceShared.Models.Shared;
 
 namespace Aufnet.Backend.ApiServiceShared.Models.Merchant
 {

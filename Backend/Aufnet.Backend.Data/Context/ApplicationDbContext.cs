@@ -1,7 +1,4 @@
-﻿using Aufnet.Backend.Data.Models.Entities;
-using Aufnet.Backend.Data.Models.Entities.Customer;
-using Aufnet.Backend.Data.Models.Entities.Event;
-using Aufnet.Backend.Data.Models.Entities.Identity;
+﻿using Aufnet.Backend.Data.Models.Entities.Customer;
 using Aufnet.Backend.Data.Models.Entities.Merchant;
 using Aufnet.Backend.Data.Models.Entities.Shared;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -28,7 +25,7 @@ namespace Aufnet.Backend.Data.Context
         public DbSet<MerchantProfile> MerchantProfiles { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<MerchantProduct> Products { get; set; }
-        public DbSet<MerchantEvents> MerchantEvents { get; set; }
+        public DbSet<MerchantEvent> MerchantEvents { get; set; }
 
     }
 }

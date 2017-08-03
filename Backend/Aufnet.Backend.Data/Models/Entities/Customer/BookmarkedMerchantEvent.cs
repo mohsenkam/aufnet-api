@@ -1,9 +1,7 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Aufnet.Backend.Data.Models.Entities.Event;
 using Aufnet.Backend.Data.Models.Entities.Identity;
+using Aufnet.Backend.Data.Models.Entities.Merchant;
 
 namespace Aufnet.Backend.Data.Models.Entities.Customer
 {
@@ -11,9 +9,9 @@ namespace Aufnet.Backend.Data.Models.Entities.Customer
     {
         public BookmarkedMerchantEvent()
         {
-            MerchantEvents = new Collection<MerchantEvents>();
+            MerchantEvents = new Collection<MerchantEvent>();
         }
         public ApplicationUser Customer { get; set; }
-        public ICollection<MerchantEvents> MerchantEvents { get; set; }
+        public ICollection<MerchantEvent> MerchantEvents { get; set; }
     }
 }

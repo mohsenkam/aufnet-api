@@ -1,20 +1,17 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Aufnet.Backend.Data.Models.Entities.Identity;
-using Aufnet.Backend.Data.Models.Entities.Merchant;
 
-namespace Aufnet.Backend.Data.Models.Entities.Event
+namespace Aufnet.Backend.Data.Models.Entities.Merchant
 {
 
-    public class MerchantEvents : Entity
+    public class MerchantEvent : Entity
     {
 
         public string Title { get; set; }
         public string Description { get; set; }
-
         [DataType(DataType.Date)]
         public DateTime StarDate { get; set; }
-
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
         //
