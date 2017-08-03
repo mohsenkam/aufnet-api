@@ -145,6 +145,7 @@ namespace Aufnet.Backend.Api
             services.AddScoped<IMerchantProfileService, MerchantProfilesService>();
             services.AddScoped<IEmailService, SendGridEmailService>();
             services.AddScoped<IMerchantEventsService, MerchantEventsService>();
+            services.AddScoped<IMerchantProductService, MerchantProductService>();
             //services.AddScoped<IMessagingService, MessagingService>();
             //services.AddTransient<IDscProcessorService, DscProcessorService>();
             //services.AddTransient<IStaffService, StaffService>();

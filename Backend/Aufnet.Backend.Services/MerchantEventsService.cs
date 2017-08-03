@@ -46,14 +46,14 @@ namespace Aufnet.Backend.Services
             {
                 meDto = new MerchantEventsDto()
                 {
-                    MerchantProductDto =  new MerchantProductDto
-                    {
-                        ProductName = merchantevents.MerchantProduct.ProductName,
-                        Description = merchantevents.MerchantProduct.Description,
-                        IsAvailable = merchantevents.MerchantProduct.IsAvailable,
-                        Discount = merchantevents.MerchantProduct.Discount,
-                        //ApplicationUserId = merchantevents.MerchantProduct.ApplicationUserId
-                    },
+                    //MerchantProductDto = new MerchantProductDto
+                    //{
+                    //    //ProductName = merchantevents.MerchantProduct.ProductName,
+                    //    //Description = merchantevents.MerchantProduct.Description,
+                    //    //IsAvailable = merchantevents.MerchantProduct.IsAvailable,
+                    //    //Discount = merchantevents.MerchantProduct.Discount,
+                    //    //ApplicationUserId = merchantevents.MerchantProduct.ApplicationUserId
+                    //},
                     Title = merchantevents.Title,
                     Description = merchantevents.Description,
                     StarDate = merchantevents.StarDate,
@@ -119,14 +119,14 @@ namespace Aufnet.Backend.Services
                 }
                 await _context.MerchantEvents.AddAsync(new MerchantEvent()
                 {
-                    MerchantProduct = new MerchantProduct
-                    {
-                        ProductName = value.MerchantProductDto.ProductName,
-                        Description = value.MerchantProductDto.Description,
-                        IsAvailable = value.MerchantProductDto.IsAvailable,
-                        Discount = value.MerchantProductDto.Discount,
-                        Id = value.MerchantProductDto.Id
-                    },
+                    //MerchantProducts = new MerchantProduct
+                    //{
+                    //    ProductName = value.MerchantProductDto.ProductName,
+                    //    Description = value.MerchantProductDto.Description,
+                    //    IsAvailable = value.MerchantProductDto.IsAvailable,
+                    //    Discount = value.MerchantProductDto.Discount,
+                    //    //Id = value.MerchantProductDto.Id
+                    //},
                     Title = value.Title,
                     Description = value.Description,
                     StarDate = value.StarDate,
@@ -135,6 +135,7 @@ namespace Aufnet.Backend.Services
                     ApplicationUser = user,
                     ApplicationUserId = user.Id
                 });
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -156,7 +157,7 @@ namespace Aufnet.Backend.Services
                     return serviceResult;
                 }
                 var mevent =
-                    _context.MerchantEvents.Include(p => p.MerchantProduct).FirstOrDefault(me => me.ApplicationUser.UserName.Equals(username));
+                    _context.MerchantEvents.FirstOrDefault(me => me.ApplicationUser.UserName.Equals(username));
                 if (mevent == null) //there is no event for this user
                 {
                     serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
@@ -168,9 +169,9 @@ namespace Aufnet.Backend.Services
                 mevent.Description = value.Description;
                 mevent.StarDate = value.StarDate;
                 mevent.EndDate = value.EndDate;
-                mevent.MerchantProduct.Description =  value.MerchantProductDto.Description;
-                mevent.MerchantProduct.IsAvailable = value.MerchantProductDto.IsAvailable;
-                mevent.MerchantProduct.Discount = value.MerchantProductDto.Discount;
+                //mevent.MerchantProduct.Description =  value.MerchantProductDto.Description;
+                //mevent.MerchantProduct.IsAvailable = value.MerchantProductDto.IsAvailable;
+                //mevent.MerchantProduct.Discount = value.MerchantProductDto.Discount;
 
                 _context.SaveChanges();
             }

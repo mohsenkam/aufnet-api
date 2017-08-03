@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 
@@ -15,7 +16,8 @@ namespace Aufnet.Backend.Data.Models.Entities.Merchant
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
         //
-        public virtual MerchantProduct MerchantProduct { get; set; }
+        public IList<MerchantProduct> MerchantProducts { set; get; }
+        //public virtual MerchantProduct MerchantProduct { get; set; }
 
         public virtual ApplicationUser ApplicationUser { get; set; }
         public string ApplicationUserId { get; set; }
