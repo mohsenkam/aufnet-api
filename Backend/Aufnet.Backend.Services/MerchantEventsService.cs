@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.ApiServiceShared.Models.Merchant;
+using Aufnet.Backend.ApiServiceShared.Models.Shared;
 using Aufnet.Backend.Data.Context;
 using Microsoft.AspNetCore.Identity;
 using Aufnet.Backend.Data.Models.Entities.Identity;
@@ -180,6 +182,28 @@ namespace Aufnet.Backend.Services
                 serviceResult.AddError(new ErrorMessage("", ex.Message));
             }
             return serviceResult;
+        }
+
+        public async Task<IGetServiceResult<List<MerchantEventsDto>>> SearchMerchantEvents(DateTime startDate, DateTime endDate)
+        {
+            var getResult = new GetServiceResult<List<MerchantEventsDto>>();
+            var filteredData =  _context.MerchantEvents.Where(me => me.StarDate >= startDate && me.EndDate <= endDate);
+            //...
+
+            List<MerchantEventsDto> meDtos;
+
+            meDtos = filteredData.Select(me => new MerchantEventsDto()
+            {
+                Title = me.Title,
+                Description = me.Description,
+                StarDate = me.StarDate,
+                EndDate = me.EndDate,
+            }).ToList();
+
+            getResult.SetData(meDtos);
+            return getResult;
+
+
         }
 
     }
