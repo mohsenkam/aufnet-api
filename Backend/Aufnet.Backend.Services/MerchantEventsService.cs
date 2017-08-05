@@ -187,12 +187,12 @@ namespace Aufnet.Backend.Services
         public async Task<IGetServiceResult<List<MerchantEventsDto>>> SearchMerchantEvents(DateTime startDate, DateTime endDate)
         {
             var getResult = new GetServiceResult<List<MerchantEventsDto>>();
-            var filteredData =  _context.MerchantEvents.Where(me => me.StarDate >= startDate && me.EndDate <= endDate);
+            var filteredEvents =  _context.MerchantEvents.Where(me => me.StarDate >= startDate && me.EndDate <= endDate);
             //...
 
             List<MerchantEventsDto> meDtos;
 
-            meDtos = filteredData.Select(me => new MerchantEventsDto()
+            meDtos = filteredEvents.Select(me => new MerchantEventsDto()
             {
                 Title = me.Title,
                 Description = me.Description,

@@ -86,5 +86,26 @@ namespace Aufnet.Backend.Api.Controllers
             }
             return Ok();
         }
+
+        //POST api/merchants/SearchMerchantEvents
+        [HttpPost("SearchMerchantEvents")]
+        [ValidateModel]
+        [AllowAnonymous]
+        public async Task<IActionResult> SearchMerchantEvents([FromBody]MerchantEventsDto merchantEventsDto)
+        {
+            //logic
+            var result = await _merchantEventService.SearchMerchantEvents(merchantEventsDto.StarDate, merchantEventsDto.EndDate);
+            if (result.HasError())
+            {
+                foreach (var error in result.GetResult().GetErrors())
+                {
+                    ModelState.AddModelError(error.Code, error.Message);
+                }
+
+                return new ValidationFailedResult(ModelState);
+            }
+
+            return Ok(result.GetData());
+        }
     }
 }
