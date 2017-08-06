@@ -11,6 +11,7 @@ namespace Aufnet.Backend.Services
     {
         Task<IGetServiceResult<MerchantEventsDto>> GetEventAsync(string username);
         Task<IServiceResult> CreateEvent(string username, MerchantEventsDto value);
+        //Task<IServiceResult> UpdateFirstEvent(string username, MerchantEventsDto value);
         Task<IServiceResult> UpdateEvent(string username, MerchantEventsDto value);
         Task<IServiceResult> DeleteEvent(string username, int merchantEventId);
         Task<IGetServiceResult<List<MerchantEventsDto>>> SearchMerchantEvents(DateTime startDate, DateTime endDate);
