@@ -37,14 +37,52 @@ namespace Aufnet.Backend.Api.Controllers
 
         // POST api/customers/john/profile
         [HttpPost]
-        public void Post([FromBody]CustomerProfileDto value)
+        public async Task<IActionResult> Post(string username, [FromBody]CustomerProfileDto value)
         {
+            var result = await _customerProfileService.CreateProfile(username, value);
+            if (result.HasError())
+            {
+                foreach (var error in result.GetErrors())
+                {
+                    ModelState.AddModelError(error.Code, error.Message);
+                }
+
+                return new ValidationFailedResult(ModelState);
+            }
+            return Ok();
         }
 
         // PUT api/customers/john/profile
         [HttpPut]
-        public void Put(string username, [FromBody]CustomerProfileDto value)
+        public async Task<IActionResult> Put(string username, [FromBody]CustomerProfileDto value)
         {
+            var result = await _customerProfileService.UpdateProfile(username, value);
+            if (result.HasError())
+            {
+                foreach (var error in result.GetErrors())
+                {
+                    ModelState.AddModelError(error.Code, error.Message);
+                }
+
+                return new ValidationFailedResult(ModelState);
+            }
+            return Ok();
+        }
+        
+        [HttpDelete]
+        public async Task<IActionResult> Delete(string username)
+        {
+            var result = await _customerProfileService.DelteProfile(username);
+            if (result.HasError())
+            {
+                foreach (var error in result.GetErrors())
+                {
+                    ModelState.AddModelError(error.Code, error.Message);
+                }
+
+                return new ValidationFailedResult(ModelState);
+            }
+            return Ok();
         }
     }
 }

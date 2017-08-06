@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Aufnet.Backend.ApiServiceShared.Models.Customer;
+using Aufnet.Backend.ApiServiceShared.Models.Merchant;
 using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.Data.Context;
 using Aufnet.Backend.Data.Models.Entities;
@@ -17,7 +18,7 @@ namespace Aufnet.Backend.Services
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public CustomerCalendarService( ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public CustomerCalendarService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -45,10 +46,10 @@ namespace Aufnet.Backend.Services
                 ccDto = null;
             else
             {
-                var eventDtos = events.MerchantEvents.Select(e => new EventDto()
+                var eventDtos = events.MerchantEvents.Select(e => new MerchantEventsDto()
                 {
                     Title = e.Title,
-                    MerchantUserName = e.Merchant.UserName
+                    MerchantUserName = e.ApplicationUserId
                 }).ToList();
                 ccDto = new CustomerCalendarDto()
                 {
@@ -59,7 +60,7 @@ namespace Aufnet.Backend.Services
             return getResult;
         }
 
-        public async Task<IServiceResult> AddEventBookmarkAsync(string username, int merchantEventId )
+        public async Task<IServiceResult> AddEventBookmarkAsync(string username, int merchantEventId)
         {
             var serviceResult = new ServiceResult();
             try
@@ -72,7 +73,8 @@ namespace Aufnet.Backend.Services
                     return serviceResult;
                 }
 
-                var bookmarkedEvent = _context.BookmarkedMerchantEvents.FirstOrDefault(bme => bme.Customer.UserName.Equals(username));
+                var bookmarkedEvent =
+                    _context.BookmarkedMerchantEvents.FirstOrDefault(bme => bme.Customer.UserName.Equals(username));
                 if (bookmarkedEvent == null)
                 {
                     serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
@@ -89,7 +91,8 @@ namespace Aufnet.Backend.Services
                         return serviceResult;
                     }
 
-                    var count = bookmarkedEvent.MerchantEvents.Count(me => me.Merchant.Id.Equals(merchantEvent.Merchant.Id));
+                    var count =
+                        bookmarkedEvent.MerchantEvents.Count(me => me.ApplicationUser.Id.Equals(merchantEvent.ApplicationUser.Id));
                     if (count > 0) //This event is already bookmarked
                     {
                         serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.AddingDuplicateEntry.Code,
@@ -121,7 +124,8 @@ namespace Aufnet.Backend.Services
                     return serviceResult;
                 }
 
-                var bookmarkedEvent = _context.BookmarkedMerchantEvents.FirstOrDefault(bme => bme.Customer.UserName.Equals(username));
+                var bookmarkedEvent =
+                    _context.BookmarkedMerchantEvents.FirstOrDefault(bme => bme.Customer.UserName.Equals(username));
                 if (bookmarkedEvent == null)
                 {
                     serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
@@ -138,7 +142,8 @@ namespace Aufnet.Backend.Services
                         return serviceResult;
                     }
 
-                    var count = bookmarkedEvent.MerchantEvents.Count(me => me.Merchant.Id.Equals(merchantEvent.Merchant.Id));
+                    var count =
+                        bookmarkedEvent.MerchantEvents.Count(me => me.ApplicationUser.Id.Equals(merchantEvent.ApplicationUser.Id));
                     if (count == 0) //This event is not bookmarked
                     {
                         serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.AddingDuplicateEntry.Code,
@@ -148,7 +153,6 @@ namespace Aufnet.Backend.Services
                     bookmarkedEvent.MerchantEvents.Remove(merchantEvent);
                     _context.SaveChanges();
                 }
-
             }
             catch (Exception ex)
             {
@@ -156,7 +160,5 @@ namespace Aufnet.Backend.Services
             }
             return serviceResult;
         }
-
-      
     }
 }

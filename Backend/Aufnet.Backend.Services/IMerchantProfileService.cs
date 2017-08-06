@@ -9,7 +9,7 @@ namespace Aufnet.Backend.Services
     public interface IMerchantProfileService
     {
         Task<IGetServiceResult<MerchantProfileDto>> GetProfileAsync(string username);
-        Task<IServiceResult> CreateProfile(MerchantProfileDto value);
+        Task<IServiceResult> CreateProfile(string username, MerchantProfileDto value);
         Task<IServiceResult> UpdateProfile(string username, MerchantProfileDto value);
         Task<IServiceResult> DelteProfile(string username);
     }

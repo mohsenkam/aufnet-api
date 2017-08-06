@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Aufnet.Backend.Api.ActionFilters;
-using Aufnet.Backend.Api.Shared;
+//using Aufnet.Backend.Api.Shared;
 using Aufnet.Backend.Api.Validation;
 using Aufnet.Backend.ApiServiceShared.Models.Customer;
 using Aufnet.Backend.ApiServiceShared.Models.Merchant;
@@ -24,6 +24,27 @@ namespace Aufnet.Backend.Api.Controllers
         public MerchantsController(IMerchantService merchantService)
         {
             _merchantService = merchantService;
+        }
+
+        //POST api/merchants/searchbyaddress
+        [HttpPost("searchbyaddress")]
+        [ValidateModel]
+        [AllowAnonymous]
+        public async Task<IActionResult> SearchByAddress([FromBody]AddressDto addressDto)
+        {
+            //logic
+            var result = await _merchantService.SearchMerchantByAddress(addressDto);
+            if (result.HasError())
+            {
+                foreach (var error in result.GetResult().GetErrors())
+                {
+                    ModelState.AddModelError(error.Code, error.Message);
+                }
+
+                return new ValidationFailedResult(ModelState);
+            }
+
+            return Ok(result.GetData());
         }
 
         //POST api/merchants

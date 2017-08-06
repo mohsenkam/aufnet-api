@@ -1,5 +1,5 @@
-﻿namespace Aufnet.Backend.Services.Base
-{
+﻿namespace Aufnet.Backend.ApiServiceShared.Shared
+{ 
     public class ErrorMessage
     {
         private string _code;

@@ -56,8 +56,7 @@ namespace Aufnet.Backend.Services
                         Detail = profile.Address.Detail,
                         PostCode = profile.Address.PostCode,
                         State = profile.Address.State,
-                        Id = profile.Address.Id,
-                        ApplicationUserId = profile.Address.ApplicationUserId
+                        
                     },
                     BusinessName = profile.BusinessName,
                     
@@ -68,9 +67,17 @@ namespace Aufnet.Backend.Services
             return getResult;
         }
 
-        public async Task<IServiceResult> CreateProfile(MerchantProfileDto value)
+        public async Task<IServiceResult> CreateProfile(string username, MerchantProfileDto value)
         {
             var serviceResult = new ServiceResult();
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingUser.Code,
+                    ErrorCodesConstants.NotExistingUser.Message));
+
+                return serviceResult;
+            }
             try
             {
                 await _context.MerchantProfiles.AddAsync(new MerchantProfile()
@@ -82,11 +89,14 @@ namespace Aufnet.Backend.Services
                         Detail = value.AddressDto.Detail,
                         PostCode = value.AddressDto.PostCode,
                         State = value.AddressDto.State,
-                        Id = value.AddressDto.Id
                     },
                     BusinessName = value.BusinessName,
+                    ApplicationUserId = user.Id,
+                    ApplicationUser = user
                 });
+                _context.SaveChanges();
             }
+
             catch (Exception ex)
             {
                 serviceResult.AddError(new ErrorMessage("", ex.Message));
@@ -107,14 +117,14 @@ namespace Aufnet.Backend.Services
                     return serviceResult;
                 }
                 var profile =
-                    _context.MerchantProfiles.Include(m=>m.Address).FirstOrDefault(cp => cp.ApplicationUser.UserName.Equals(username));
+                    _context.MerchantProfiles.Include(m => m.ApplicationUser).Include(m=>m.Address).FirstOrDefault(cp => cp.ApplicationUser.UserName.Equals(username));
                 if (profile == null) //there is no profile for this user
                 {
                     serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
                         ErrorCodesConstants.ManipulatingMissingEntity.Message));
                     return serviceResult;
                 }
-
+                profile.BusinessName = value.BusinessName;
                 profile.Address.City = value.AddressDto.City;
                 profile.Address.Country = value.AddressDto.Country;
                 profile.Address.Detail = value.AddressDto.Detail;
@@ -142,14 +152,17 @@ namespace Aufnet.Backend.Services
                     return serviceResult;
                 }
                 var profile =
-                    _context.MerchantProfiles.FirstOrDefault(cp => cp.ApplicationUser.UserName.Equals(username));
+                    _context.MerchantProfiles.Include(mp=>mp.Address).FirstOrDefault(cp => cp.ApplicationUser.UserName.Equals(username));
                 if (profile == null) //there is no profile for this user
                 {
                     serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
                         ErrorCodesConstants.ManipulatingMissingEntity.Message));
                     return serviceResult;
                 }
-
+                if (profile.Address != null)
+                {
+                    _context.Addresses.Remove(profile.Address);
+                }
                 _context.MerchantProfiles.Remove(profile);
                 _context.SaveChanges();
             }

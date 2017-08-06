@@ -1,33 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Aufnet.Backend.Api.ActionFilters;
+﻿using System.Threading.Tasks;
 using Aufnet.Backend.Api.Validation;
-using Aufnet.Backend.ApiServiceShared.Models;
+using Aufnet.Backend.ApiServiceShared.Models.Customer;
 using Aufnet.Backend.ApiServiceShared.Models.Merchant;
 using Aufnet.Backend.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aufnet.Backend.Api.Controllers
 {
-    [Route("api/merchants/{username}/profile")]
-    public class MerchantProfileController : BaseController
+    [Route("api/merchants/{username}/product")]
+    public class MerchantProductController : BaseController
     {
-        private readonly IMerchantProfileService _merchantProfileService;
+        private readonly IMerchantProductService _merchantProductService;
 
-        public MerchantProfileController(IMerchantProfileService merchantProfileService)
+        public MerchantProductController(IMerchantProductService merchantProductService)
         {
-            _merchantProfileService = merchantProfileService;
+            _merchantProductService = merchantProductService;
         }
 
-        // GET api/merchants/john/profile
+        // GET api/merchants/john/product
         [HttpGet]
         public async Task<IActionResult> GetAsync(string username)
         {
             //logic
-            var result = await _merchantProfileService.GetProfileAsync(username);
+            var result = await _merchantProductService.GetProductAsync(username);
             if (result.HasError())
             {
                 foreach (var error in result.GetResult().GetErrors())
@@ -41,14 +36,11 @@ namespace Aufnet.Backend.Api.Controllers
             return Ok(result.GetData());
         }
 
-
-        // POST api/merchants/john/profile
+        // POST api/merchants/john/product
         [HttpPost]
-        [ValidateModel]
-        [AllowAnonymous]
-        public async Task<IActionResult> Post(string username, [FromBody]MerchantProfileDto value)
+        public async Task<IActionResult> Post(string username, [FromBody]MerchantProductDto value)
         {
-            var result = await _merchantProfileService.CreateProfile(username,value);
+            var result = await _merchantProductService.CreateProduct(username, value);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
@@ -61,13 +53,11 @@ namespace Aufnet.Backend.Api.Controllers
             return Ok();
         }
 
-        // PUT api/merchants/john/profile
+        // PUT api/merchants/john/product
         [HttpPut]
-        [ValidateModel]
-        [AllowAnonymous]
-        public async Task<IActionResult> Put(string username, [FromBody]MerchantProfileDto value)
+        public async Task<IActionResult> Put(string username, [FromBody]MerchantProductDto value)
         {
-            var result = await _merchantProfileService.UpdateProfile(username, value);
+            var result = await _merchantProductService.UpdateProduct(username, value);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
@@ -79,12 +69,11 @@ namespace Aufnet.Backend.Api.Controllers
             }
             return Ok();
         }
-
-
+        
         [HttpDelete]
         public async Task<IActionResult> Delete(string username)
         {
-            var result = await _merchantProfileService.DelteProfile(username);
+            var result = await _merchantProductService.DelteProduct(username);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())

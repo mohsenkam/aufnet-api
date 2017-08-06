@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Aufnet.Backend.Api.Shared;
+//using Aufnet.Backend.Api.Shared;
 using Aufnet.Backend.ApiServiceShared.Models;
 using Aufnet.Backend.ApiServiceShared.Models.Customer;
 using Aufnet.Backend.ApiServiceShared.Models.Shared;
@@ -137,6 +137,7 @@ namespace Aufnet.Backend.Services
             }
 
             var result = await _userManager.ChangePasswordAsync(user, value.CurrentPassword, value.NewPassword);
+            //_context.SaveChanges();
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)
