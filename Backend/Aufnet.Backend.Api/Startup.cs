@@ -43,7 +43,7 @@ namespace Aufnet.Backend.Api
                     .MinimumLevel.Information()
                     .Enrich
                     .FromLogContext()
-                    .WriteTo.RollingFile("logs\\gardenia-api-{Date}.txt")
+                    .WriteTo.RollingFile("logs\\aufnet-api-{Date}.txt")
                     .CreateLogger();
             }
             else
@@ -216,6 +216,8 @@ namespace Aufnet.Backend.Api
                     .AllowCredentials();
             });
 
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureCreated();
             //OAuth
             // Register the validation middleware, that is used to decrypt
             // the access tokens and populate the HttpContext.User property.
@@ -225,8 +227,7 @@ namespace Aufnet.Backend.Api
             app.UseMvcWithDefaultRoute();
 
             app.UseMvc(routes => routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}"));
-            dbContext.Database.EnsureDeleted();
-            dbContext.Database.EnsureCreated();
+            
 
             //todo: remove test code
             //var dscSvc = app.ApplicationServices.GetRequiredService<IDscProcessorService>();
