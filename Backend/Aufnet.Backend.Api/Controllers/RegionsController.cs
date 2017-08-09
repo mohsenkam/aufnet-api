@@ -1,10 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Aufnet.Backend.Api.ActionFilters;
+//using Aufnet.Backend.Api.Shared;
 using Aufnet.Backend.Api.Validation;
 using Aufnet.Backend.ApiServiceShared.Models;
-using Aufnet.Backend.ApiServiceShared.Models.Merchant;
+using Aufnet.Backend.ApiServiceShared.Models.Customer;
+using Aufnet.Backend.ApiServiceShared.Models.Shared;
+using Aufnet.Backend.ApiServiceShared.Shared;
+using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -12,22 +16,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aufnet.Backend.Api.Controllers
 {
-    [Route("api/merchants/{username}/profile")]
-    public class MerchantProfileController : BaseController
+    [Route("api/[controller]")]    
+    public class RegionsController : BaseController
     {
-        private readonly IMerchantProfileService _merchantProfileService;
+        private readonly IRegionService _regionService;
 
-        public MerchantProfileController(IMerchantProfileService merchantProfileService)
+        public RegionsController(UserManager<ApplicationUser> userManager, IRegionService regionService)
         {
-            _merchantProfileService = merchantProfileService;
+            _regionService = regionService;
         }
 
-        // GET api/merchants/john/profile
-        [HttpGet]
-        public async Task<IActionResult> GetAsync(string username)
+        // GET api/regions/john
+        [HttpGet("{name}")]
+        [ValidateModel]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAsync(string name)
         {
             //logic
-            var result = await _merchantProfileService.GetProfileAsync(username);
+            var result = await _regionService.GetRegionAsync(name);
             if (result.HasError())
             {
                 foreach (var error in result.GetResult().GetErrors())
@@ -42,13 +48,13 @@ namespace Aufnet.Backend.Api.Controllers
         }
 
 
-        // POST api/merchants/john/profile
+        //POST api/regions
         [HttpPost]
         [ValidateModel]
         [AllowAnonymous]
-        public async Task<IActionResult> Post(string username, [FromBody]MerchantProfileDto value)
+        public async Task<IActionResult> Post([FromBody]RegionDto value)
         {
-            var result = await _merchantProfileService.CreateProfile(username,value);
+            var result=await _regionService.CreateRegion(value);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
@@ -61,13 +67,12 @@ namespace Aufnet.Backend.Api.Controllers
             return Ok();
         }
 
-        // PUT api/merchants/john/profile
-        [HttpPut]
+        //PUT api/regions/john
+        [HttpPut("{name}")]
         [ValidateModel]
-        [AllowAnonymous]
-        public async Task<IActionResult> Put(string username, [FromBody]MerchantProfileDto value)
+        public async Task<IActionResult> Update(string name, [FromBody]RegionDto value)
         {
-            var result = await _merchantProfileService.UpdateProfile(username, value);
+            var result = await _regionService.UpdateRegion(name, value);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
@@ -80,11 +85,11 @@ namespace Aufnet.Backend.Api.Controllers
             return Ok();
         }
 
-
-        [HttpDelete]
-        public async Task<IActionResult> Delete(string username)
+        // DELETE api/regions/john
+        [HttpDelete("{name}")]
+        public async Task<IActionResult> Delete(string name)
         {
-            var result = await _merchantProfileService.DeleteProfile(username);
+            var result = await _regionService.DeleteRegion(name);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
@@ -96,5 +101,6 @@ namespace Aufnet.Backend.Api.Controllers
             }
             return Ok();
         }
+
     }
 }

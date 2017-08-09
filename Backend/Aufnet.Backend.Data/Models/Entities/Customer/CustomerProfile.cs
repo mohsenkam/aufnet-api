@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Data.Models.Entities.Shared;
+using ZXing.Rendering;
 
 namespace Aufnet.Backend.Data.Models.Entities.Customer
 {
@@ -30,6 +31,7 @@ namespace Aufnet.Backend.Data.Models.Entities.Customer
         //todo: Add photo
         //todo: Add barcode
 
+        //public PixelData PixelData { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
         public string ApplicationUserId { get; set; }
     }

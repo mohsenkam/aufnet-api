@@ -8,8 +8,9 @@ namespace Aufnet.Backend.Data.Models.Entities.Merchant
     public class MerchantProfile: Entity
     {
         public string BusinessName { get; set; }
-
         public virtual Address Address { get; set; }
+
+        public virtual Point Location { get; set; }
         
 
         public virtual ApplicationUser ApplicationUser { get; set; }

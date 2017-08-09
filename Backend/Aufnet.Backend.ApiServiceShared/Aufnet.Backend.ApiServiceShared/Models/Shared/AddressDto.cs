@@ -1,4 +1,7 @@
-﻿namespace Aufnet.Backend.ApiServiceShared.Models.Shared
+﻿
+using Aufnet.Backend.Data.Models.Entities.Shared;
+
+namespace Aufnet.Backend.ApiServiceShared.Models.Shared
 {
     public class AddressDto
     {
@@ -8,5 +11,7 @@
         public string City { get; set; }
         public string Detail { get; set; }
         public string PostCode { get; set; }
+        public double Distance { get; set; }
+        public Point TargetLocation { get; set; }
     }
 }

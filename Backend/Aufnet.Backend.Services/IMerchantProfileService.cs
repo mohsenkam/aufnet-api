@@ -11,6 +11,6 @@ namespace Aufnet.Backend.Services
         Task<IGetServiceResult<MerchantProfileDto>> GetProfileAsync(string username);
         Task<IServiceResult> CreateProfile(string username, MerchantProfileDto value);
         Task<IServiceResult> UpdateProfile(string username, MerchantProfileDto value);
-        Task<IServiceResult> DelteProfile(string username);
+        Task<IServiceResult> DeleteProfile(string username);
     }
 }

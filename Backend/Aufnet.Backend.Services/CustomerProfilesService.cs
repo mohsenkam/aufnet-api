@@ -9,6 +9,8 @@ using Aufnet.Backend.Data.Models.Entities.Customer;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Services.Base;
 using Microsoft.AspNetCore.Identity;
+using ZXing;
+using ZXing.QrCode;
 using Gender = Aufnet.Backend.Data.Models.Entities.Shared.Gender;
 
 namespace Aufnet.Backend.Services
@@ -163,6 +165,44 @@ namespace Aufnet.Backend.Services
                 serviceResult.AddError(new ErrorMessage("", ex.Message));
             }
             return serviceResult;
+        }
+
+        public Task<IServiceResult> SetBarcode(string username)
+        {
+            //var QrcodeContent = username;
+            var alt = username;
+            var width = 250; // width of the Qr Code
+            var height = 250; // height of the Qr Code
+            var margin = 0;
+            BarcodeWriterPixelData writer = new BarcodeWriterPixelData()
+            {
+                Format = BarcodeFormat.QR_CODE,
+                Options = new QrCodeEncodingOptions { Height = height, Width = width, Margin = margin }
+            };
+            var pixelData = writer.Write(username);
+
+            //using (var bitmap = new System.Drawing.Bitmap(pixelData.Width, pixelData.Height, System.Drawing.Imaging.PixelFormat.Format32bppRgb))
+            //{
+            //    using (var ms = new System.IO.MemoryStream())
+            //    {
+            //        var bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, pixelData.Width, pixelData.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            //        try
+            //        {
+            //            // we assume that the row stride of the bitmap is aligned to 4 byte multiplied by the width of the image   
+            //            System.Runtime.InteropServices.Marshal.Copy(pixelData.Pixels, 0, bitmapData.Scan0, pixelData.Pixels.Length);
+            //        }
+            //        finally
+            //        {
+            //            bitmap.UnlockBits(bitmapData);
+            //        }
+
+            //        // PNG or JPEG or whatever you want
+            //        bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            //        bitmap.Save("image.png", ImageFormat.Png);
+            //        var base64str = Convert.ToBase64String(ms.ToArray());
+            //    }
+            //}
+            throw new NotImplementedException();
         }
     }
 }
