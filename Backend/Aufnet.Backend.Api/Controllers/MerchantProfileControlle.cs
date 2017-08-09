@@ -84,7 +84,7 @@ namespace Aufnet.Backend.Api.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(string username)
         {
-            var result = await _merchantProfileService.DelteProfile(username);
+            var result = await _merchantProfileService.DeleteProfile(username);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())

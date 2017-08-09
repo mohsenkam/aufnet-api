@@ -60,8 +60,8 @@ namespace Aufnet.Backend.Services
         public async Task<IGetServiceResult<List<MerchantProfileDto>>> SearchMerchantByAddress(AddressDto addressDto)
         {
             var getResult = new GetServiceResult<List<MerchantProfileDto>>();
+            IQueryable<MerchantProfile> query = _context.MerchantProfiles.Include(m => m.Location).Include(m => m.Address).Where(m => true);
 
-            IQueryable<MerchantProfile> query = _context.MerchantProfiles.Include(m => m.Address).Where(m => true);
             if (addressDto.City != null)
             {
                 query = query.Where(c => c.Address.City == addressDto.City);
@@ -82,11 +82,20 @@ namespace Aufnet.Backend.Services
             {
                 query = query.Where(c => c.Address.State == addressDto.State);
             }
+            if (addressDto.Distance != 0 && addressDto.TargetLocation != null)
+            {
+                query = query.Where(c => Math.Pow(addressDto.TargetLocation.Latitude - (double)c.Location.Latitude, 2) + Math.Pow(addressDto.TargetLocation.Longitude - (double)c.Location.Longitude, 2) < addressDto.Distance * addressDto.Distance);
+            }
             List<MerchantProfileDto> mpDtos;
 
             mpDtos = query.Select(q => new MerchantProfileDto()
             {
                 BusinessName = q.BusinessName,
+                LocationDto = new PointDto()
+                {
+                    Longitude = q.Location.Longitude,
+                    Latitude = q.Location.Latitude
+                },
                 AddressDto = new AddressDto()
                 {
                     City = q.Address.City,
@@ -97,7 +106,7 @@ namespace Aufnet.Backend.Services
 
                 }
             }).ToList();
-
+            
             getResult.SetData(mpDtos);
             return getResult;
 

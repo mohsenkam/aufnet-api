@@ -58,6 +58,11 @@ namespace Aufnet.Backend.Services
                         State = profile.Address.State,
                         
                     },
+                    LocationDto = new PointDto()
+                    {
+                        Longitude = profile.Location.Longitude,
+                        Latitude = profile.Location.Latitude
+                    },
                     BusinessName = profile.BusinessName,
                     
                     //Gender todo: put in the proper place
@@ -88,9 +93,14 @@ namespace Aufnet.Backend.Services
                         Country = value.AddressDto.Country,
                         Detail = value.AddressDto.Detail,
                         PostCode = value.AddressDto.PostCode,
-                        State = value.AddressDto.State,
+                        State = value.AddressDto.State
                     },
                     BusinessName = value.BusinessName,
+                    Location = new Point()
+                    {
+                        Longitude = value.LocationDto.Longitude,
+                        Latitude = value.LocationDto.Latitude
+                    },
                     ApplicationUserId = user.Id,
                     ApplicationUser = user
                 });
@@ -130,6 +140,9 @@ namespace Aufnet.Backend.Services
                 profile.Address.Detail = value.AddressDto.Detail;
                 profile.Address.PostCode = value.AddressDto.PostCode;
                 profile.Address.State = value.AddressDto.State;
+                profile.Location.Latitude = value.LocationDto.Latitude;
+                profile.Location.Longitude = value.LocationDto.Longitude;
+
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -139,7 +152,7 @@ namespace Aufnet.Backend.Services
             return serviceResult;
         }
 
-        public async Task<IServiceResult> DelteProfile(string username)
+        public async Task<IServiceResult> DeleteProfile(string username)
         {
             var serviceResult = new ServiceResult();
             try
