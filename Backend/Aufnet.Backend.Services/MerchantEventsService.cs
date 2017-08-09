@@ -199,33 +199,19 @@ namespace Aufnet.Backend.Services
                     return serviceResult;
                 }
                 var mevent =
-                    _context.MerchantEvents.FirstOrDefault(me => me.ApplicationUser.UserName.Equals(username));
+                    _context.MerchantEvents.Include(m => m.ApplicationUser).Where(m => m.Id == value.Id).FirstOrDefault(cp => cp.ApplicationUser.UserName.Equals(username));
                 if (mevent == null) //there is no event for this user
                 {
                     serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
                         ErrorCodesConstants.ManipulatingMissingEntity.Message));
                     return serviceResult;
                 }
-                else
-                {
-                    var merchantEvent = _context.MerchantEvents.FirstOrDefault(me => me.Id == value.Id);
-                    if (merchantEvent == null)
-                    {
-                        serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.InvalidArgument.Code,
-                            ErrorCodesConstants.InvalidArgument.Message + "event doesn't exist"));
-                        return serviceResult;
-                    }
-                    mevent.Title = value.Title;
-                    mevent.Description = value.Description;
-                    mevent.StarDate = value.StarDate;
-                    mevent.EndDate = value.EndDate;
-                    //mevent.MerchantProduct.Description =  value.MerchantProductDto.Description;
-                    //mevent.MerchantProduct.IsAvailable = value.MerchantProductDto.IsAvailable;
-                    //mevent.MerchantProduct.Discount = value.MerchantProductDto.Discount;
-
-                    _context.Update(mevent);
-                }
-               
+                mevent.Title = value.Title;
+                mevent.Description = value.Description;
+                mevent.StarDate = value.StarDate;
+                mevent.EndDate = value.EndDate;
+                //
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -240,9 +226,9 @@ namespace Aufnet.Backend.Services
             var filteredEvents =  _context.MerchantEvents.Where(me => me.StarDate >= startDate && me.EndDate <= endDate);
             //...
 
-            List<MerchantEventsDto> meDtos;
 
-            meDtos = filteredEvents.Select(me => new MerchantEventsDto()
+
+            List<MerchantEventsDto>  meDtos = filteredEvents.Select(me => new MerchantEventsDto()
             {
                 Title = me.Title,
                 Description = me.Description,
