@@ -10,10 +10,11 @@ namespace Aufnet.Backend.ApiServiceShared.Shared
         public static readonly ErrorDto InvalidRole = new ErrorDto("0001", "The role to be assigned to the user is not valid for this user"); //e.g. a customer cannot be an admin
         public static readonly ErrorDto NotExistingUser = new ErrorDto("0002", "The user doesn't exist"); //e.g. changing the password of a user who doesn't exist
         public static readonly ErrorDto ArgumentMissing = new ErrorDto("0003", "The required argument is not provided: "); //e.g. the password sent to the change password is null. Usage: Add the name of the argument to the description part
-        public static readonly ErrorDto ManipulatingMissingEntity = new ErrorDto("0004", "Trying to update/delete an entity which doesn't exist."); //e.g. updating/deleting the customer profile before the profile is added at first place
+        public static readonly ErrorDto ManipulatingMissingEntity = new ErrorDto("0004", "Trying to update/delete/Get an entity which doesn't exist."); //e.g. updating/deleting the customer profile before the profile is added at first place
         public static readonly ErrorDto AddingDuplicateEntry = new ErrorDto("0005", "Trying to add an entry to an entity which already exists in that entity."); //e.g. adding the same event to the customer's calendar
         public static readonly ErrorDto InvalidArgument = new ErrorDto("0006", "Invalid Argument: "); //e.g. adding the a not-existing event to the customer's calendar
         public static readonly ErrorDto ManipulatingMissingEntry = new ErrorDto("0007", "Trying to update/delete an entry of an entity which doesn't exist."); //e.g. deleting a customer calendar bookmark before the being added at first place
+        
 
 
         //Error codes 1000 tO 1999 are customer related errors
