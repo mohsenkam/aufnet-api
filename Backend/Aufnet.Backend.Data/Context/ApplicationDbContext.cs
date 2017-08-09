@@ -1,6 +1,7 @@
 ﻿using Aufnet.Backend.Data.Models.Entities.Customer;
 using Aufnet.Backend.Data.Models.Entities.Merchant;
 using Aufnet.Backend.Data.Models.Entities.Shared;
+using Aufnet.Backend.Data.Models.Entities.Transaction;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +27,7 @@ namespace Aufnet.Backend.Data.Context
         public DbSet<Address> Addresses { get; set; }
         public DbSet<MerchantProduct> Products { get; set; }
         public DbSet<MerchantEvent> MerchantEvents { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
     }
 }
