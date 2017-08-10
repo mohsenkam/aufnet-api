@@ -26,7 +26,9 @@ namespace Aufnet.Backend.Data.Context
         public DbSet<MerchantProfile> MerchantProfiles { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<MerchantProduct> Products { get; set; }
-        public DbSet<MerchantEvent> MerchantEvents { get; set; }
+       
+         public DbSet<Region> Regions { get; set; }
+          public DbSet<Point> Points { get; set; }
 
     }
 }
