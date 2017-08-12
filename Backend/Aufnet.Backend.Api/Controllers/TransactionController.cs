@@ -16,34 +16,14 @@ namespace Aufnet.Backend.Api.Controllers
             _transactionService = transactionService;
         }
 
-        // GET api/merchants/{username}/transaction/GetCustomerTransactionsAsync
+
+        // GET api/merchants/{username}/transaction/GetTransactionsAsync
         [HttpGet]
-        [Route("GetCustomerTransactionsAsync")]
-        public async Task<IActionResult> GetCustomerTransactionsAsync(string username)
+        [Route("GetTransactionsAsync")]
+        public async Task<IActionResult> GetTransactionsAsync(string username)
         {
             //logic
-            var result = await _transactionService.GetCustomerTransactionsAsync(username);
-            if (result.HasError())
-            {
-                foreach (var error in result.GetResult().GetErrors())
-                {
-                    ModelState.AddModelError(error.Code, error.Message);
-                }
-
-                return new ValidationFailedResult(ModelState);
-            }
-
-            return Ok(result.GetData());
-        }
-
-
-        // GET api/merchants/{username}/transaction/GetMerchantTransactionsAsync
-        [HttpGet]
-        [Route("GetMerchantTransactionsAsync")]
-        public async Task<IActionResult> GetMerchantTransactionsAsync(string username)
-        {
-            //logic
-            var result = await _transactionService.GetMerchantTransactionsAsync(username);
+            var result = await _transactionService.GetTransactionsAsync(username);
             if (result.HasError())
             {
                 foreach (var error in result.GetResult().GetErrors())
@@ -60,7 +40,7 @@ namespace Aufnet.Backend.Api.Controllers
 
         // POST api/merchants/{username}/transaction
         [HttpPost]
-        public async Task<IActionResult> Post(string username, [FromBody]TransactionDto value)
+        public async Task<IActionResult> Post(string username, [FromBody] TransactionDto value)
         {
             var result = await _transactionService.CreateTransaction(username, value);
             if (result.HasError())
@@ -75,13 +55,14 @@ namespace Aufnet.Backend.Api.Controllers
             return Ok();
         }
 
-        // GET api/merchants/{username}/transaction/GetCustomerTransactionAsync
+
+        // GET api/merchants/{username}/transaction/GetTransactionDetailsAsync
         [HttpGet]
-        [Route("GetCustomerTransactionAsync")]
-        public async Task<IActionResult> GetCustomerTransactionAsync(string username, [FromBody] int value)
+        [Route("GetTransactionDetailsAsync")]
+        public async Task<IActionResult> GetTransactionDetailsAsync(string username, [FromBody] int value)
         {
             //logic
-            var result = await _transactionService.GetCustomerTransactionAsync(username, value);
+            var result = await _transactionService.GetTransactionDetailsAsync(username, value);
             if (result.HasError())
             {
                 foreach (var error in result.GetResult().GetErrors())
@@ -94,28 +75,6 @@ namespace Aufnet.Backend.Api.Controllers
 
             return Ok(result.GetData());
         }
-
-
-        // GET api/merchants/{username}/transaction/GetMerchantTransactionAsync
-        [HttpGet]
-        [Route("GetMerchantTransactionAsync")]
-        public async Task<IActionResult> GetMerchantTransactionAsync(string username, [FromBody] int value)
-        {
-            //logic
-            var result = await _transactionService.GetMerchantTransactionAsync(username, value);
-            if (result.HasError())
-            {
-                foreach (var error in result.GetResult().GetErrors())
-                {
-                    ModelState.AddModelError(error.Code, error.Message);
-                }
-
-                return new ValidationFailedResult(ModelState);
-            }
-
-            return Ok(result.GetData());
-        }
-
 
     }
 }

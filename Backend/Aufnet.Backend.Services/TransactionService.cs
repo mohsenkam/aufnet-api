@@ -22,7 +22,7 @@ namespace Aufnet.Backend.Services
             _userManager = userManager;
         }
 
-        public async Task<IGetServiceResult<List<TransactionDto>>> GetCustomerTransactionsAsync(string username)
+        public async Task<IGetServiceResult<List<TransactionDto>>> GetTransactionsAsync(string username)
         {
             var serviceResult = new ServiceResult();
             //validation
@@ -35,55 +35,28 @@ namespace Aufnet.Backend.Services
                 getResult.SetResult(serviceResult);
                 return getResult;
             }
-            IQueryable<Transaction> transaction =
-                _context.Transactions.Where(ct => ct.Customer == user);
+            //if (_userManager.GetRolesAsync(user)..IsInRoleAsync(user, "Customer").Result)
+            //{
+                IQueryable<Transaction> transaction =
+                  _context.Transactions.Where(ct => ct.Customer == user);
 
-            List<TransactionDto> tDtos = transaction.Select(t => new TransactionDto()
-            {
-                Id = (int)t.Id,
-                Title = t.Title,
-                Date = t.Date,
-                Amount = t.Amount,
-                PointNumber = t.PointNumber,
-                Customer = t.Customer,
-                Merchant = t.Merchant,
-            }).ToList();
+                List<TransactionDto> tDtos = transaction.Select(t => new TransactionDto()
+                {
+                    Id = (int)t.Id,
+                    Title = t.Title,
+                    Date = t.Date,
+                    Amount = t.Amount,
+                    PointNumber = t.PointNumber,
+                    Customer = t.Customer,
+                    Merchant = t.Merchant,
+                }).ToList();
+                getResult.SetData(tDtos);
+            //}
+            
 
-            getResult.SetData(tDtos);
+          
             return getResult;
         }
-
-        public async Task<IGetServiceResult<List<TransactionDto>>> GetMerchantTransactionsAsync(string username)
-        {
-            var serviceResult = new ServiceResult();
-            //validation
-            var getResult = new GetServiceResult<List<TransactionDto>>();
-            var user = await _userManager.FindByNameAsync(username);
-            if (user == null)
-            {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingUser.Code,
-                    ErrorCodesConstants.NotExistingUser.Message));
-                getResult.SetResult(serviceResult);
-                return getResult;
-            }
-            IQueryable<Transaction> transaction =
-                _context.Transactions.Where(ct => ct.Merchant == user);
-
-            List<TransactionDto> tDtos = transaction.Select(t => new TransactionDto()
-            {
-                Id = (int)t.Id,
-                Title = t.Title,
-                Date = t.Date,
-                Amount = t.Amount,
-                PointNumber = t.PointNumber,
-                Customer = t.Customer,
-                Merchant = t.Merchant,
-            }).ToList();
-
-            getResult.SetData(tDtos);
-            return getResult;
-        }
-
 
         public async Task<IServiceResult> CreateTransaction(string username, TransactionDto value)
         {
@@ -106,6 +79,7 @@ namespace Aufnet.Backend.Services
                     Amount = value.Amount,
                     Customer = value.Customer,
                     Merchant = value.Merchant,
+                    //
                     ApplicationUser = user,
                     ApplicationUserId = user.Id
                 });
@@ -119,40 +93,7 @@ namespace Aufnet.Backend.Services
             return serviceResult;
         }
 
-        public async Task<IGetServiceResult<TransactionDto>> GetCustomerTransactionAsync(string username,
-           int transactionId)
-        {
-            var serviceResult = new ServiceResult();
-            //validation
-            var getResult = new GetServiceResult<TransactionDto>();
-            var user = await _userManager.FindByNameAsync(username);
-            if (user == null)
-            {
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingUser.Code,
-                    ErrorCodesConstants.NotExistingUser.Message));
-                getResult.SetResult(serviceResult);
-                return getResult;
-            }
-
-            var transaction =
-                _context.Transactions.Where(t => t.Id == transactionId).FirstOrDefault();
-
-            var tDto = new TransactionDto()
-            {
-                Id = (int)transaction.Id,
-                Title = transaction.Title,
-                Date = transaction.Date,
-                Amount = transaction.Amount,
-                PointNumber = transaction.PointNumber,
-                Customer = transaction.Customer,
-                Merchant = transaction.Merchant,
-            };
-
-            getResult.SetData(tDto);
-            return getResult;
-        }
-
-        public async Task<IGetServiceResult<TransactionDto>> GetMerchantTransactionAsync(string username,
+        public async Task<IGetServiceResult<TransactionDto>> GetTransactionDetailsAsync(string username,
             int transactionId)
         {
             var serviceResult = new ServiceResult();
@@ -167,7 +108,7 @@ namespace Aufnet.Backend.Services
                 return getResult;
             }
             var transaction =
-                _context.Transactions.Where(t => t.Id == transactionId).FirstOrDefault();
+                _context.Transactions.Find(transactionId);
 
             TransactionDto tDtos = new TransactionDto()
             {

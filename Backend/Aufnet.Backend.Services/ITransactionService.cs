@@ -7,10 +7,8 @@ namespace Aufnet.Backend.Services
 {
     public interface ITransactionService
     {
-        Task<IGetServiceResult<List<TransactionDto>>> GetCustomerTransactionsAsync(string username);
-        Task<IGetServiceResult<List<TransactionDto>>> GetMerchantTransactionsAsync(string username);
+        Task<IGetServiceResult<List<TransactionDto>>> GetTransactionsAsync(string username);
         Task<IServiceResult> CreateTransaction(string username, TransactionDto value);
-        Task<IGetServiceResult<TransactionDto>> GetCustomerTransactionAsync(string username, int value);
-        Task<IGetServiceResult<TransactionDto>> GetMerchantTransactionAsync(string username, int value);
+        Task<IGetServiceResult<TransactionDto>> GetTransactionDetailsAsync(string username, int value);
     }
 }
