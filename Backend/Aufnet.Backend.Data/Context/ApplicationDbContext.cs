@@ -1,5 +1,6 @@
 ﻿using Aufnet.Backend.Data.Models.Entities.Customer;
 using Aufnet.Backend.Data.Models.Entities.Merchant;
+using Aufnet.Backend.Data.Models.Entities.Reminder;
 using Aufnet.Backend.Data.Models.Entities.Shared;
 using Aufnet.Backend.Data.Models.Entities.Transaction;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -30,6 +31,7 @@ namespace Aufnet.Backend.Data.Context
         public DbSet<Region> Regions { get; set; }
         public DbSet<Point> Points { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Reminder> Reminders { get; set; }
 
     }
 }
