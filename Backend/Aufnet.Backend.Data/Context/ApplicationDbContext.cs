@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aufnet.Backend.Data.Context
 {
-    public class ApplicationDbContext:IdentityDbContext//<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext //<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
@@ -17,7 +17,7 @@ namespace Aufnet.Backend.Data.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            
+
         }
 
         public DbSet<CustomerProfile> CustomerProfiles { get; set; }
@@ -26,10 +26,10 @@ namespace Aufnet.Backend.Data.Context
         public DbSet<MerchantProfile> MerchantProfiles { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<MerchantProduct> Products { get; set; }
-       public DbSet<MerchantEvent> MerchantEvents { get; set; }
-         public DbSet<Region> Regions { get; set; }
-          public DbSet<Point> Points { get; set; }
-          public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<MerchantEvent> MerchantEvents { get; set; }
+        public DbSet<Region> Regions { get; set; }
+        public DbSet<Point> Points { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
     }
 }
