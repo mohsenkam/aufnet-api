@@ -12,6 +12,7 @@ namespace Aufnet.Backend.ApiServiceShared.Models.Shared
         public string Detail { get; set; }
         public string PostCode { get; set; }
         public double Distance { get; set; }
-        public Point TargetLocation { get; set; }
+        public Point BaseLocation { get; set; }
+        public RegionDto RegionDto { get; set; }
     }
 }

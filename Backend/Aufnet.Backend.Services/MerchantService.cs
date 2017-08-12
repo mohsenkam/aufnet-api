@@ -82,10 +82,20 @@ namespace Aufnet.Backend.Services
             {
                 query = query.Where(c => c.Address.State == addressDto.State);
             }
-            if (addressDto.Distance != 0 && addressDto.TargetLocation != null)
+            if (addressDto.BaseLocation != null)
             {
-                query = query.Where(c => Math.Pow(addressDto.TargetLocation.Latitude - (double)c.Location.Latitude, 2) + Math.Pow(addressDto.TargetLocation.Longitude - (double)c.Location.Longitude, 2) < addressDto.Distance * addressDto.Distance);
+                query = query.Where(c => Math.Pow(addressDto.BaseLocation.Latitude - (double)c.Location.Latitude, 2) + Math.Pow(addressDto.BaseLocation.Longitude - (double)c.Location.Longitude, 2) < addressDto.Distance * addressDto.Distance);
             }
+
+            if (addressDto.RegionDto != null)
+            {
+                var region = _context.Regions.Include(m=>m.Center).FirstOrDefault(r => r.Name.Equals(addressDto.RegionDto.Name));
+                query = query.Where(c => Math.Pow(region.Center.Latitude - (double)c.Location.Latitude, 2) + Math.Pow(region.Center.Longitude - (double)c.Location.Longitude, 2) < addressDto.Distance * addressDto.Distance);
+            }
+
+
+
+
             List<MerchantProfileDto> mpDtos;
 
             mpDtos = query.Select(q => new MerchantProfileDto()
