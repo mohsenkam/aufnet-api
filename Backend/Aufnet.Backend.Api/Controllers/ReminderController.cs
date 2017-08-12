@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aufnet.Backend.Api.Controllers
 {
-    [Route("api/reminder")]
+    [Route("api/{username}/reminder")]
     public class ReminderController : BaseController
     {
         private readonly IReminderService _reminderService;
@@ -17,7 +17,7 @@ namespace Aufnet.Backend.Api.Controllers
         }
 
 
-        // POST api/reminder
+        // POST api/{username}/reminder
         [HttpPost]
         public async Task<IActionResult> Post(string username, [FromBody] ReminderDto value)
         {
@@ -34,7 +34,7 @@ namespace Aufnet.Backend.Api.Controllers
             return Ok();
         }
 
-        // PUT api/reminder
+        // PUT api/{username}/reminder
         [HttpPut]
         public async Task<IActionResult> Put(string username, [FromBody] ReminderDto value)
         {
@@ -51,7 +51,7 @@ namespace Aufnet.Backend.Api.Controllers
             return Ok();
         }
 
-        // DELETE api/reminder
+        // DELETE api/{username}/reminder
         [HttpDelete("{reminderId}")]
         public async Task<IActionResult> Delete(string username, int reminderId)
         {

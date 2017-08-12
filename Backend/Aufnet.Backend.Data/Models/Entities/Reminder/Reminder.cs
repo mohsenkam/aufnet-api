@@ -13,7 +13,7 @@ namespace Aufnet.Backend.Data.Models.Entities.Reminder
         [DataType(DataType.Date)]
         public DateTime TrigerDateTime { get; set; }
 
-        public  virtual MerchantEvent Event { get; set; }
+        public virtual MerchantEvent Event { get; set; }
 
         public virtual ApplicationUser ApplicationUser { get; set; }
         public string ApplicationUserId { get; set; }

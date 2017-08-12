@@ -38,6 +38,7 @@ namespace Aufnet.Backend.Services
                 await _context.Reminders.AddAsync(new Reminder()
                 {
                     TrigerDateTime = value.TrigerDateTime,
+                    Event = value.Event,
                     //
                     ApplicationUser = user,
                     ApplicationUserId = user.Id
@@ -51,7 +52,6 @@ namespace Aufnet.Backend.Services
             return serviceResult;
         }
 
- 
         public async Task<IServiceResult> DeleteReminder(string username, int merchantReminderId)
         {
             var serviceResult = new ServiceResult();
@@ -92,8 +92,6 @@ namespace Aufnet.Backend.Services
             return serviceResult;
         }
 
- 
-
         public async Task<IServiceResult> UpdateReminder(string username, ReminderDto value)
         {
             var serviceResult = new ServiceResult();
@@ -117,6 +115,7 @@ namespace Aufnet.Backend.Services
                     return serviceResult;
                 }
                 mReminder.TrigerDateTime = value.TrigerDateTime;
+                mReminder.Event = value.Event;
                 //
                 _context.SaveChanges();
             }
@@ -126,8 +125,5 @@ namespace Aufnet.Backend.Services
             }
             return serviceResult;
         }
-
- 
-
     }
 }
