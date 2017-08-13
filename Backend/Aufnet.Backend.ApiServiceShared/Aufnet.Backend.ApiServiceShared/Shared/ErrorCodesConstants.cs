@@ -14,7 +14,8 @@ namespace Aufnet.Backend.ApiServiceShared.Shared
         public static readonly ErrorDto AddingDuplicateEntry = new ErrorDto("0005", "Trying to add an entry to an entity which already exists in that entity."); //e.g. adding the same event to the customer's calendar
         public static readonly ErrorDto InvalidArgument = new ErrorDto("0006", "Invalid Argument: "); //e.g. adding the a not-existing event to the customer's calendar
         public static readonly ErrorDto ManipulatingMissingEntry = new ErrorDto("0007", "Trying to update/delete an entry of an entity which doesn't exist."); //e.g. deleting a customer calendar bookmark before the being added at first place
-        
+        public static readonly ErrorDto UserRolesNotValidRole = new ErrorDto("0008", "Trying to Get an data which doesn't belong's this role."); //e.g. user doesn't have a correct role ( customer && merchant )
+
 
 
         //Error codes 1000 tO 1999 are customer related errors

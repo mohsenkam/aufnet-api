@@ -8,8 +8,7 @@ using Aufnet.Backend.Data.Context;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Data.Models.Entities.Merchant;
 using Aufnet.Backend.Data.Models.Entities.Shared;
-using Aufnet.Backend.Services.Base;
-using Aufnet.Backend.Services.Base.Exceptions;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

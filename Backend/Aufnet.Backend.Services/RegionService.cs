@@ -8,7 +8,7 @@ using Aufnet.Backend.Data.Context;
 using Aufnet.Backend.Data.Models.Entities.Customer;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Data.Models.Entities.Shared;
-using Aufnet.Backend.Services.Base;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ZXing;

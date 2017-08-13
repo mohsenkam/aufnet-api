@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Aufnet.Backend.ApiServiceShared.Models.Merchant;
 using Aufnet.Backend.ApiServiceShared.Models.Shared;
 using Aufnet.Backend.ApiServiceShared.Shared;
-using Aufnet.Backend.Services.Base;
+
 
 namespace Aufnet.Backend.Services
 {

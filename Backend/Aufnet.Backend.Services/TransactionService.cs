@@ -35,14 +35,15 @@ namespace Aufnet.Backend.Services
                 getResult.SetResult(serviceResult);
                 return getResult;
             }
-            //if (_userManager.GetRolesAsync(user)..IsInRoleAsync(user, "Customer").Result)
-            //{
+            if (_userManager.IsInRoleAsync(user, "customer").Result == true)
+            {
+
                 IQueryable<Transaction> transaction =
-                  _context.Transactions.Where(ct => ct.Customer == user);
+                    _context.Transactions.Where(ct => ct.Customer.Id == user.Id);
 
                 List<TransactionDto> tDtos = transaction.Select(t => new TransactionDto()
                 {
-                    Id = (int)t.Id,
+                    Id = (int) t.Id,
                     Title = t.Title,
                     Date = t.Date,
                     Amount = t.Amount,
@@ -51,10 +52,33 @@ namespace Aufnet.Backend.Services
                     Merchant = t.Merchant,
                 }).ToList();
                 getResult.SetData(tDtos);
-            //}
-            
+            }
+            //
+            if (_userManager.IsInRoleAsync(user, "merchant").Result == true)
+            {
 
-          
+                IQueryable<Transaction> transaction =
+                    _context.Transactions.Where(mt => mt.Merchant.Id == user.Id);
+
+                List<TransactionDto> tDtos = transaction.Select(t => new TransactionDto()
+                {
+                    Id = (int) t.Id,
+                    Title = t.Title,
+                    Date = t.Date,
+                    Amount = t.Amount,
+                    PointNumber = t.PointNumber,
+                    Customer = t.Customer,
+                    Merchant = t.Merchant,
+                }).ToList();
+                getResult.SetData(tDtos);
+            }
+
+            else
+            {
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.UserRolesNotValidRole.Code,
+                    ErrorCodesConstants.UserRolesNotValidRole.Message));
+                getResult.SetResult(serviceResult);
+            }
             return getResult;
         }
 
@@ -70,6 +94,7 @@ namespace Aufnet.Backend.Services
                         ErrorCodesConstants.NotExistingUser.Message));
 
                     return serviceResult;
+
                 }
                 await _context.Transactions.AddAsync(new Transaction()
                 {
@@ -89,6 +114,11 @@ namespace Aufnet.Backend.Services
             {
                 serviceResult.AddError(new ErrorMessage("", ex.Message));
             }
+
+          
+
+            serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingUser.Code,
+                        ErrorCodesConstants.NotExistingUser.Message));
 
             return serviceResult;
         }

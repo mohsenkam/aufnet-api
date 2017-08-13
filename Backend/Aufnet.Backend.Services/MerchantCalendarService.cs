@@ -6,7 +6,7 @@ using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.Data.Context;
 using Aufnet.Backend.Data.Models.Entities;
 using Aufnet.Backend.Data.Models.Entities.Identity;
-using Aufnet.Backend.Services.Base;
+
 using Microsoft.AspNetCore.Identity;
 
 namespace Aufnet.Backend.Services

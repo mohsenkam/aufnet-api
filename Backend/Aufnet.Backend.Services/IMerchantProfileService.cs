@@ -2,7 +2,7 @@
 using Aufnet.Backend.ApiServiceShared.Models;
 using Aufnet.Backend.ApiServiceShared.Models.Merchant;
 using Aufnet.Backend.ApiServiceShared.Shared;
-using Aufnet.Backend.Services.Base;
+
 
 namespace Aufnet.Backend.Services
 {

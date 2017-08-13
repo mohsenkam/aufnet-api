@@ -6,12 +6,13 @@ using Aufnet.Backend.ApiServiceShared.Models;
 using Aufnet.Backend.ApiServiceShared.Models.Merchant;
 using Aufnet.Backend.ApiServiceShared.Models.Shared;
 using Aufnet.Backend.ApiServiceShared.Shared;
+using Aufnet.Backend.ApiServiceShared.Shared.Exceptions;
 using Aufnet.Backend.Data.Context;
-using Aufnet.Backend.Services.Base;
+
 using Microsoft.AspNetCore.Identity;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Data.Models.Entities.Merchant;
-using Aufnet.Backend.Services.Base.Exceptions;
+
 using Aufnet.Backend.Services.Shared;
 using Microsoft.EntityFrameworkCore;
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Aufnet.Backend.Services.Base.Exceptions
+namespace Aufnet.Backend.ApiServiceShared.Shared.Exceptions
 {
     //This error should be caught at this project level
     public class InvalidArgumentException: Exception
