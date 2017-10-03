@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Aufnet.Backend.ApiServiceShared.Models.Merchant;
 using Aufnet.Backend.ApiServiceShared.Models.Shared;
 using Aufnet.Backend.ApiServiceShared.Shared;
+using Microsoft.AspNetCore.Http;
 
 
 namespace Aufnet.Backend.Services
@@ -10,7 +11,8 @@ namespace Aufnet.Backend.Services
     public interface IMerchantService
     {
         Task<IGetServiceResult<MerchantSignUpDto>> GetMerchantAsync(string username);
-        Task<IGetServiceResult<MerchantSignUpDto>> GetMerchantAsync();
+        Task<IGetServiceResult<List<MerchantContractSummaryDto>>> GetMerchantsContractsSummaryAsync(PagingParams pagingParams);
+        Task<IServiceResult> CreateAccountAsync( MerchantCreateDto value );
         Task<IServiceResult> SignUpAsync(MerchantSignUpDto value); //Create user (customer)
         Task<IServiceResult> ChangePasswordAsync(string username, MerchantChangePasswordDto value); //Update user (customer)
         Task<IServiceResult> DeleteAsync(string username); //Delete user (customer)
@@ -18,5 +20,7 @@ namespace Aufnet.Backend.Services
         Task<IServiceResult> ResetPasswordByMail(string email);
         Task<IServiceResult> ResetPasswordByPhone(string phone);
         Task<IGetServiceResult<List<MerchantProfileDto>>> SearchMerchantByAddress(AddressDto addressDto);
+        Task<IServiceResult> SaveLogoAsync(IFormFile file, IHeaderDictionary requestHeaders);
+        Task<IServiceResult> SendRegistrationEmailAsync(string trackingId);
     }
 }

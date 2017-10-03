@@ -4,10 +4,12 @@ using Aufnet.Backend.Data.Models.Entities.Identity;
 
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using AspNet.Security.OpenIdConnect.Primitives;
 using Aufnet.Backend.ApiServiceShared.Models;
 using Aufnet.Backend.ApiServiceShared.Models.Shared;
 using Aufnet.Backend.Services;
+using Aufnet.Backend.Services.Merchant;
 using Aufnet.Backend.Services.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -21,6 +23,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Serilog;
+using Pomelo.EntityFrameworkCore.MySql;
 
 namespace Aufnet.Backend.Api
 {
@@ -67,7 +70,8 @@ namespace Aufnet.Backend.Api
             services.AddMvc();
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(Configuration["ConnectionStrings:AufnetDB"]);
+                options.UseMySql(Configuration["ConnectionStrings:AufnetDB"]);
+                //options.UseSqlServer(Configuration["ConnectionStrings:AufnetDB"]);
                 // Register the entity sets needed by OpenIddict.
                 // Note: use the generic overload if you need
                 // to replace the default OpenIddict entities.
@@ -187,10 +191,8 @@ namespace Aufnet.Backend.Api
             var dbContext = app.ApplicationServices.GetRequiredService<ApplicationDbContext>();
             var userManager = app.ApplicationServices.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = app.ApplicationServices.GetRequiredService<RoleManager<IdentityRole>>();
-            dbContext.Database.EnsureDeleted();
-            dbContext.Database.EnsureCreated();
             DbInitializer.Initialize(dbContext, userManager, roleManager).Wait();
-            
+
             ////init messaging
             //var msgSvc = app.ApplicationServices.GetRequiredService<IMessagingService>();
             //msgSvc.InitMessaging();
@@ -223,9 +225,6 @@ namespace Aufnet.Backend.Api
                     .AllowAnyMethod()
                     .AllowCredentials();
             });
-
-            dbContext.Database.EnsureDeleted();
-            dbContext.Database.EnsureCreated();
             //OAuth
             // Register the validation middleware, that is used to decrypt
             // the access tokens and populate the HttpContext.User property.

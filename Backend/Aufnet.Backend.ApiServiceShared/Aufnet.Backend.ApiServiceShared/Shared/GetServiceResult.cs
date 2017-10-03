@@ -2,6 +2,8 @@ namespace Aufnet.Backend.ApiServiceShared.Shared
 {
     public class GetServiceResult<T> : IGetServiceResult<T>
     {
+        
+
         public IServiceResult GetResult()
         {
             return this._serviceResult;
@@ -27,7 +29,19 @@ namespace Aufnet.Backend.ApiServiceShared.Shared
             return _serviceResult != null && _serviceResult.HasError();
         }
 
+        public int GetTotalCount()
+        {
+            return _totalCount;
+        }
+
+        public void SetTotalCount(int totalCount)
+        {
+            _totalCount = totalCount;
+        }
+
+
         private T _data;
+        private int _totalCount;
         private IServiceResult _serviceResult;
 
     }

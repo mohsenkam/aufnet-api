@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Aufnet.Backend.ApiServiceShared.Models;
@@ -7,6 +8,7 @@ using Aufnet.Backend.ApiServiceShared.Models.Merchant;
 using Aufnet.Backend.ApiServiceShared.Models.Shared;
 using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.ApiServiceShared.Shared.Exceptions;
+using Aufnet.Backend.ApiServiceShared.Shared.utils;
 using Aufnet.Backend.Data.Context;
 
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +16,9 @@ using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Data.Models.Entities.Merchant;
 
 using Aufnet.Backend.Services.Shared;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace Aufnet.Backend.Services
 {
@@ -63,18 +67,18 @@ namespace Aufnet.Backend.Services
             var getResult = new GetServiceResult<List<MerchantProfileDto>>();
             IQueryable<MerchantProfile> query = _context.MerchantProfiles.Include(m => m.Location).Include(m => m.Address).Where(m => true);
 
-            if (addressDto.City != null)
-            {
-                query = query.Where(c => c.Address.City == addressDto.City);
-            }
+            //if (addressDto.City != null)
+            //{
+            //    query = query.Where(c => c.Address.City == addressDto.City);
+            //}
             if (addressDto.Country != null)
             {
                 query = query.Where(c => c.Address.Country == addressDto.Country);
             }
-            if (addressDto.Detail != null)
-            {
-                query = query.Where(c => c.Address.Detail == addressDto.Detail);
-            }
+            //if (addressDto.Detail != null)
+            //{
+            //    query = query.Where(c => c.Address.Detail == addressDto.Detail);
+            //}
             if (addressDto.PostCode != null)
             {
                 query = query.Where(c => c.Address.PostCode == addressDto.PostCode);
@@ -109,9 +113,9 @@ namespace Aufnet.Backend.Services
                 },
                 AddressDto = new AddressDto()
                 {
-                    City = q.Address.City,
+                    //City = q.Address.City,
                     Country = q.Address.Country,
-                    Detail = q.Address.Detail,
+                    //Detail = q.Address.Detail,
                     PostCode = q.Address.PostCode,
                     State = q.Address.State
 
@@ -124,10 +128,180 @@ namespace Aufnet.Backend.Services
 
         }
 
-        public Task<IGetServiceResult<MerchantSignUpDto>> GetMerchantAsync()
+        public async Task<IServiceResult> SaveLogoAsync(IFormFile file, IHeaderDictionary requestHeaders)
         {
-            throw new NotImplementedException();
+            var serviceResult = new ServiceResult();
+
+            // Check if the header is set
+            var trackingId = requestHeaders["trackingId"];
+            if (string.IsNullOrEmpty(trackingId))
+            {
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.InvalidOperation.Code, ErrorCodesConstants.InvalidOperation.Message));
+                return serviceResult;
+            }
+
+            // Check if the merchant exists
+            try
+            {
+
+
+                var merchantContract = await _context.MerchantContracts.FirstOrDefaultAsync(mc => mc.TrackingId.Equals(trackingId));
+                if (merchantContract == null)
+                {
+                    serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.InvalidOperation.Code,
+                        ErrorCodesConstants.InvalidOperation.Message));
+                    return serviceResult;
+                }
+
+                // Read (upload) the file
+                var filePath = Path.GetTempFileName();
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                merchantContract.LogoUri = filePath;
+                _context.MerchantContracts.Update(merchantContract);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                // todo: log the exception
+
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.OperationFailed.Code, ErrorCodesConstants.OperationFailed.Message));
+            }
+
+
+            serviceResult.SetExteraData(new { file = file.FileName, size = file.Length });
+            return serviceResult;
         }
+
+        public async Task<IServiceResult> SendRegistrationEmailAsync(string trackingId)
+        {
+            var serviceResult = new ServiceResult();
+
+
+
+            var merchantContract =
+                await _context.MerchantContracts.FirstOrDefaultAsync(mc => mc.TrackingId == trackingId);
+
+            // Check if this trackingId is generated
+            if (merchantContract == null)
+            {
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.InvalidOperation.Code,
+                    ErrorCodesConstants.InvalidOperation.Message));
+                return serviceResult;
+            }
+
+            // Check if this trackingId is not used
+            if (merchantContract.IsTrackingIdUsed)
+            {
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.RepeatedOperation.Code,
+                    ErrorCodesConstants.RepeatedOperation.Message));
+                return serviceResult;
+            }
+
+            var callbackUrl = "http://localhost:4200/auth/register/merchant?trackingId=" + trackingId;
+            await _emailService.SendEmailAsync(new EmailModel
+            {
+                ToEmail = merchantContract.Email,
+                Subject = "Complete your registration",
+                Body = $"Follow the link to create your account: </br>{callbackUrl}"
+            });
+
+            return serviceResult;
+        }
+
+        public async Task<IGetServiceResult<List<MerchantContractSummaryDto>>> GetMerchantsContractsSummaryAsync(PagingParams pagingParams)
+        {
+            var getServiceResult = new GetServiceResult<List<MerchantContractSummaryDto>>();
+            if (!pagingParams.IsValid)
+            {
+                var serviceResult = new ServiceResult();
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.InvalidArgument.Code,
+                    ErrorCodesConstants.InvalidArgument.Message));
+                getServiceResult.SetResult(serviceResult);
+                return getServiceResult;
+            }
+            try
+            {
+                var queryable =  _context.MerchantContracts.Select(mc => new MerchantContractSummaryDto()
+                {
+                    Id = mc.Id,
+                    BusinessName = mc.BusinessName,
+                    Abn = mc.Abn,
+                    Category = mc.Category,
+                    ContractStartDate = mc.ContractStartDate,
+                    SubCategory = mc.SubCategory,
+                });
+                if (pagingParams.Count != 0) // This is to support the paging in the future.
+                    queryable.Skip(pagingParams.Offset * pagingParams.Count).Take(pagingParams.Count);
+                var data = await queryable.ToListAsync();
+                getServiceResult.SetData(data);
+                getServiceResult.SetTotalCount(await _context.MerchantContracts.CountAsync());
+            }
+            catch (Exception e)
+            {
+                // todo: log the exception
+                var serviceResult = new ServiceResult();
+
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.OperationFailed.Code, ErrorCodesConstants.OperationFailed.Message));
+                getServiceResult.SetResult(serviceResult);
+            }
+
+            return getServiceResult;
+        }
+
+        public async Task<IServiceResult> CreateAccountAsync(MerchantCreateDto value)
+        {
+            var serviceResult = new ServiceResult();
+
+
+            var merchantContract = await _context.MerchantContracts.FirstOrDefaultAsync(m => m.Abn == value.Abn && m.BusinessName == value.BusinessName);
+            if (merchantContract != null) // The merchant is already added to the database
+            {
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.RepeatedOperation.Code, ErrorCodesConstants.RepeatedOperation.Message));
+                return serviceResult;
+            }
+
+            try
+            {
+                // Create the merchant
+                merchantContract = new MerchantContract
+                {
+
+                    Abn = value.Abn,
+                    Address = value.Address,
+                    BusinessName = value.BusinessName,
+                    Category = value.Category,
+                    ContractStartDate = DateTime.Now,
+                    Email = value.Email,
+                    OwnerName = value.OwnerName,
+                    Phone = value.Phone,
+                    SubCategory = value.SubCategory,
+                    TrackingId = UtilityMethods.GenerateTrackingId(DateTime.Now)
+                };
+                while (true) // Check if the tracking Id is unique
+                {
+                    if (_context.MerchantContracts.Count(mc => mc.TrackingId.Equals(merchantContract.TrackingId)) == 0)
+                        break;
+                }
+                await _context.MerchantContracts.AddAsync(merchantContract);
+                await _context.SaveChangesAsync();
+                serviceResult.SetExteraData(new {merchantContract.TrackingId});
+            }
+            catch (Exception e)
+            {
+                // todo: log the exception
+
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.OperationFailed.Code, ErrorCodesConstants.OperationFailed.Message));
+            }
+
+            return serviceResult;
+
+
+        }
+
+        
 
         public async Task<IServiceResult> SignUpAsync(MerchantSignUpDto value)
         {

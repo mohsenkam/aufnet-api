@@ -10,5 +10,7 @@ namespace Aufnet.Backend.ApiServiceShared.Shared
         T GetData();
         void SetData(T data);
         bool HasError();
+        int GetTotalCount();
+        void SetTotalCount(int totalCount);
     }
 }

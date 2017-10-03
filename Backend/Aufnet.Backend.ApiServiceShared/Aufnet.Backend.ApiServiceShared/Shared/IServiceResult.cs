@@ -8,5 +8,8 @@ namespace Aufnet.Backend.ApiServiceShared.Shared
         IEnumerable<ErrorMessage> GetErrors();
         bool HasError();
         void AddError(ErrorMessage error);
+        bool HasExteraData();
+        object GetExteraData();
+        void SetExteraData(object data);
     }
 }

@@ -1,20 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
-using Aufnet.Backend.Data.Models.Entities.Identity;
-using Aufnet.Backend.Data.Models.Entities.Merchant;
-using Aufnet.Backend.Data.Models.Entities.Shared;
+﻿using System.ComponentModel.DataAnnotations;
+
 namespace Aufnet.Backend.Data.Models.Entities.Shared
 {
     public class Address:Entity
     {
+        [MaxLength(40)]
+        [Required]
         public string Country { get; set; }
+
+        [MaxLength(40)]
+        [Required]
         public string State { get; set; }
-        public string City { get; set; }
-        public string Detail { get; set; }
+
+        [MaxLength(40)]
+        [Required]
         public string PostCode { get; set; }
+
+        [MaxLength(40)]
+        [Required]
+        public string Street { get; set; }
+
+        [MaxLength(40)]
+        public string Unit { get; set; }
+
+        [MaxLength(210)]
+        [Required]
+        public string Raw { get; set; }
 
     }
 }

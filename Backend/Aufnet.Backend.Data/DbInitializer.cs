@@ -12,37 +12,30 @@ namespace Aufnet.Backend.Data
 {
     public static class DbInitializer
     {
-        public static async Task Initialize(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+        public static async Task Initialize( ApplicationDbContext context, UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager )
         {
+            context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
             //create users
             if (!context.Users.Any())
             {
-                if (!await roleManager.RoleExistsAsync("customer"))
+                if (!await roleManager.RoleExistsAsync("SuperAdmin"))
                 {
+                    await roleManager.CreateAsync(new IdentityRole("SuperAdmin"));
                     await roleManager.CreateAsync(new IdentityRole("customer"));
-                }
-                if (!await roleManager.RoleExistsAsync("merchant"))
-                {
                     await roleManager.CreateAsync(new IdentityRole("merchant"));
-                }
-                if (!await roleManager.RoleExistsAsync("ticket_attendant"))
-                {
                     await roleManager.CreateAsync(new IdentityRole("ticket_attendant"));
-                }
-                if (!await roleManager.RoleExistsAsync("manager"))
-                {
                     await roleManager.CreateAsync(new IdentityRole("manager"));
+
                 }
-                context.SaveChanges();
             }
-            ////Create User=admin
+            //Create User=admin
             //var superUser = new ApplicationUser
             //{
             //    UserName = "sa",
-            //    Email = "developers@switchlink.com.au",
+            //    Email = "admin@aufnet.com",
             //    EmailConfirmed = true
             //};
             //var adminresult = await userManager.CreateAsync(superUser, "Potatohair51!");

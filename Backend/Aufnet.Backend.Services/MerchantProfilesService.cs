@@ -50,9 +50,9 @@ namespace Aufnet.Backend.Services
                 {
                     AddressDto = new AddressDto
                     {
-                        City = profile.Address.City,
+                        //City = profile.Address.City,
                         Country = profile.Address.Country,
-                        Detail = profile.Address.Detail,
+                        //Detail = profile.Address.Detail,
                         PostCode = profile.Address.PostCode,
                         State = profile.Address.State,
                         
@@ -88,9 +88,9 @@ namespace Aufnet.Backend.Services
                 {
                     Address = new Address
                     {
-                        City = value.AddressDto.City,
+                        //City = value.AddressDto.City,
                         Country = value.AddressDto.Country,
-                        Detail = value.AddressDto.Detail,
+                        //Detail = value.AddressDto.Detail,
                         PostCode = value.AddressDto.PostCode,
                         State = value.AddressDto.State
                     },
@@ -134,9 +134,9 @@ namespace Aufnet.Backend.Services
                     return serviceResult;
                 }
                 profile.BusinessName = value.BusinessName;
-                profile.Address.City = value.AddressDto.City;
+                //profile.Address.City = value.AddressDto.City;
                 profile.Address.Country = value.AddressDto.Country;
-                profile.Address.Detail = value.AddressDto.Detail;
+                //profile.Address.Detail = value.AddressDto.Detail;
                 profile.Address.PostCode = value.AddressDto.PostCode;
                 profile.Address.State = value.AddressDto.State;
                 profile.Location.Latitude = value.LocationDto.Latitude;
