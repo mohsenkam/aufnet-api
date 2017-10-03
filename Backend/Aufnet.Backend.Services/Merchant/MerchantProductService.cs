@@ -76,23 +76,25 @@ namespace Aufnet.Backend.Services.Merchant
                 {
                     serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.NotExistingUser.Code,
                         ErrorCodesConstants.NotExistingUser.Message));
-                    
+
                     return serviceResult;
                 }
-               await _context.Products.AddAsync(new MerchantProduct()
+                await _context.Products.AddAsync(new MerchantProduct()
                 {
-                   Description = value.Description,
-                   IsAvailable = value.IsAvailable,
-                   ProductName = value.ProductName,
-                   Discount = value.Discount,
-                   ApplicationUser = user,
-                   ApplicationUserId = user.Id
+                    Description = value.Description,
+                    IsAvailable = value.IsAvailable,
+                    ProductName = value.ProductName,
+                    Discount = value.Discount,
+                    ApplicationUser = user,
+                    ApplicationUserId = user.Id
                 });
                 _context.SaveChanges();
             }
             catch (Exception ex)
             {
-                serviceResult.AddError(new ErrorMessage("", ex.Message));
+                // log the exception
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.OperationFailed.Code,
+                    ErrorCodesConstants.OperationFailed.Message));
             }
 
             return serviceResult;

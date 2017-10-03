@@ -14,7 +14,7 @@ namespace Aufnet.Backend.Services.Admin.Configs
         Task<IGetServiceResult<List<CategoryDto>>> GetCategoriesAsync(long? parentId);
         Task<IGetServiceResult<CategoryDto>> GetCategoryAsync(long id);
         Task<IServiceResult> CreateCategoryAsync(CreateCategoryDto value);
-        Task<IServiceResult> SaveImageAsync(IFormFile file);
+        Task<IServiceResult> SaveImageAsync( long id, IFormFile file);
         Task<IServiceResult> UpdateCategoryDisplayNameAsync(long id, string newDisplayName);
         Task<IServiceResult> UpdateCategoryImageAsync(long id, IFormFile file);
         Task<IServiceResult> DeleteCategoryImageAsync(long id);

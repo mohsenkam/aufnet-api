@@ -35,9 +35,9 @@ namespace Aufnet.Backend.Api.Controllers.Admin.Configs
         }
 
         [HttpPost("upload/{id}")]
-        public async Task<IActionResult> AddCategoryImage(IFormFile file)
+        public async Task<IActionResult> AddCategoryImage(long id, IFormFile file)
         {
-            var result = await _adminService.SaveImageAsync(file);
+            var result = await _adminService.SaveImageAsync(id, file);
 
             if (result.HasError())
             {

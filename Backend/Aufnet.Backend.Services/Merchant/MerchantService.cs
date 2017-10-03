@@ -10,17 +10,15 @@ using Aufnet.Backend.ApiServiceShared.Shared;
 using Aufnet.Backend.ApiServiceShared.Shared.Exceptions;
 using Aufnet.Backend.ApiServiceShared.Shared.utils;
 using Aufnet.Backend.Data.Context;
-
-using Microsoft.AspNetCore.Identity;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Data.Models.Entities.Merchant;
-
+using Aufnet.Backend.Data.Models.Entities.Shared;
 using Aufnet.Backend.Services.Shared;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-
-namespace Aufnet.Backend.Services
+namespace Aufnet.Backend.Services.Merchant
 {
     public class MerchantService : IMerchantService
     {
@@ -65,7 +63,7 @@ namespace Aufnet.Backend.Services
         public async Task<IGetServiceResult<List<MerchantProfileDto>>> SearchMerchantByAddress(AddressDto addressDto)
         {
             var getResult = new GetServiceResult<List<MerchantProfileDto>>();
-            IQueryable<MerchantProfile> query = _context.MerchantProfiles.Include(m => m.Location).Include(m => m.Address).Where(m => true);
+            IQueryable<MerchantProfile> query = EntityFrameworkQueryableExtensions.Include<MerchantProfile, Point>(_context.MerchantProfiles, m => m.Location).Include(m => m.Address).Where(m => true);
 
             //if (addressDto.City != null)
             //{
@@ -94,7 +92,7 @@ namespace Aufnet.Backend.Services
 
             if (addressDto.RegionDto != null)
             {
-                var region = _context.Regions.Include(m=>m.Center).FirstOrDefault(r => r.Name.Equals(addressDto.RegionDto.Name));
+                var region = EntityFrameworkQueryableExtensions.Include<Region, Point>(_context.Regions, m=>m.Center).FirstOrDefault(r => r.Name.Equals(addressDto.RegionDto.Name));
                 query = query.Where(c => Math.Pow(region.Center.Latitude - (double)c.Location.Latitude, 2) + Math.Pow(region.Center.Longitude - (double)c.Location.Longitude, 2) < addressDto.Distance * addressDto.Distance);
             }
 
@@ -145,7 +143,7 @@ namespace Aufnet.Backend.Services
             {
 
 
-                var merchantContract = await _context.MerchantContracts.FirstOrDefaultAsync(mc => mc.TrackingId.Equals(trackingId));
+                var merchantContract = await EntityFrameworkQueryableExtensions.FirstOrDefaultAsync<MerchantContract>(_context.MerchantContracts, mc => mc.TrackingId.Equals(trackingId));
                 if (merchantContract == null)
                 {
                     serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.InvalidOperation.Code,
@@ -182,7 +180,7 @@ namespace Aufnet.Backend.Services
 
 
             var merchantContract =
-                await _context.MerchantContracts.FirstOrDefaultAsync(mc => mc.TrackingId == trackingId);
+                await EntityFrameworkQueryableExtensions.FirstOrDefaultAsync<MerchantContract>(_context.MerchantContracts, mc => mc.TrackingId == trackingId);
 
             // Check if this trackingId is generated
             if (merchantContract == null)
@@ -224,7 +222,7 @@ namespace Aufnet.Backend.Services
             }
             try
             {
-                var queryable =  _context.MerchantContracts.Select(mc => new MerchantContractSummaryDto()
+                var queryable =  Queryable.Select<MerchantContract, MerchantContractSummaryDto>(_context.MerchantContracts, mc => new MerchantContractSummaryDto()
                 {
                     Id = mc.Id,
                     BusinessName = mc.BusinessName,
@@ -237,7 +235,7 @@ namespace Aufnet.Backend.Services
                     queryable.Skip(pagingParams.Offset * pagingParams.Count).Take(pagingParams.Count);
                 var data = await queryable.ToListAsync();
                 getServiceResult.SetData(data);
-                getServiceResult.SetTotalCount(await _context.MerchantContracts.CountAsync());
+                getServiceResult.SetTotalCount(await EntityFrameworkQueryableExtensions.CountAsync<MerchantContract>(_context.MerchantContracts));
             }
             catch (Exception e)
             {
@@ -256,7 +254,7 @@ namespace Aufnet.Backend.Services
             var serviceResult = new ServiceResult();
 
 
-            var merchantContract = await _context.MerchantContracts.FirstOrDefaultAsync(m => m.Abn == value.Abn && m.BusinessName == value.BusinessName);
+            var merchantContract = await EntityFrameworkQueryableExtensions.FirstOrDefaultAsync<MerchantContract>(_context.MerchantContracts, m => m.Abn == value.Abn && m.BusinessName == value.BusinessName);
             if (merchantContract != null) // The merchant is already added to the database
             {
                 serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.RepeatedOperation.Code, ErrorCodesConstants.RepeatedOperation.Message));
@@ -282,7 +280,7 @@ namespace Aufnet.Backend.Services
                 };
                 while (true) // Check if the tracking Id is unique
                 {
-                    if (_context.MerchantContracts.Count(mc => mc.TrackingId.Equals(merchantContract.TrackingId)) == 0)
+                    if (Queryable.Count<MerchantContract>(_context.MerchantContracts, mc => mc.TrackingId.Equals(merchantContract.TrackingId)) == 0)
                         break;
                 }
                 await _context.MerchantContracts.AddAsync(merchantContract);
@@ -433,7 +431,7 @@ namespace Aufnet.Backend.Services
                     return serviceResult;
                 }
                 var profile =
-                    _context.MerchantProfiles.FirstOrDefault(cp => cp.ApplicationUser.UserName.Equals(username));
+                    Queryable.FirstOrDefault<MerchantProfile>(_context.MerchantProfiles, cp => cp.ApplicationUser.UserName.Equals(username));
                 if (profile != null) //delete the user's profile before deleting the user
                 {
                     _context.MerchantProfiles.Remove(profile);
