@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <ApplicationIcon />
     <OutputTypeEx>library</OutputTypeEx>
     <StartupObject />
@@ -18,11 +18,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Customers\CustomerCalendarService.cs" />
+    <Compile Remove="Customers\ICustomerCalendarService.cs" />
+    <Compile Remove="IMerchantCalendarService.cs" />
+    <Compile Remove="IMerchantEventsService.cs" />
+    <Compile Remove="IRegionService.cs" />
+    <Compile Remove="IReminderService.cs" />
+    <Compile Remove="MerchantCalendarService.cs" />
+    <Compile Remove="MerchantEventsService.cs" />
+    <Compile Remove="MerchantProfilesService.cs" />
+    <Compile Remove="RegionService.cs" />
+    <Compile Remove="ReminderService.cs" />
     <Compile Remove="Shared\ServiceErrorCodesConstants.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SendGrid" Version="9.5.2" />
+    <PackageReference Include="SendGrid" Version="9.9.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -14,7 +14,10 @@ namespace Aufnet.Backend.ApiServiceShared.Models.Merchant
         public string Password { get; set; }
 
         [Required]
-        public string TrackingId { get; set; }
+        public string Abn { get; set; }
+
+        [Required]
+        public string BusinessName { get; set; }
 
     }
 }

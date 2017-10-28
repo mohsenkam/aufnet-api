@@ -33,6 +33,7 @@ namespace Aufnet.Backend.ApiServiceShared.Shared
 
         //Error codes 3000 tO 3999 are system related errors
         public static readonly ErrorDto OperationFailed = new ErrorDto("3000", "Operation Failed"); //e.g. the record cannot be saved to the database
+        public static readonly ErrorDto EmailNotConfirmed = new ErrorDto("3001", "Email not confirmed");
 
 
 

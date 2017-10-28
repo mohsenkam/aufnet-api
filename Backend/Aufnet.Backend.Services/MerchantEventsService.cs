@@ -112,7 +112,7 @@ namespace Aufnet.Backend.Services
 
                     return serviceResult;
                 }
-                await _context.MerchantEvents.AddAsync(new MerchantEvent()
+                await _context.MerchantEvents.AddAsync(new ItemBasedOffer()
                 {
                     Title = value.Title,
                     Description = value.Description,

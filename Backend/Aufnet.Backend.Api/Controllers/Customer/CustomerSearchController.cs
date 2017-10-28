@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Aufnet.Backend.Api.Validation;
 using Aufnet.Backend.ApiServiceShared.Shared;
-using Aufnet.Backend.Services.Customer;
+using Aufnet.Backend.Services.Customers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aufnet.Backend.Api.Controllers.Customer
@@ -17,22 +17,22 @@ namespace Aufnet.Backend.Api.Controllers.Customer
             _customerSearchService = customerSearchService;
         }
 
-        [HttpGet("products/{order}")]
-        public async Task<IActionResult> GetProducts(string order, SearchParams searchParams)
-        {
-            var result = await _customerSearchService.GetProductsAsync(order, searchParams);
-            if (result.HasError())
-            {
-                foreach (var error in result.GetResult().GetErrors())
-                {
-                    ModelState.AddModelError(error.Code, error.Message);
-                }
+        //[HttpGet("products/{order}")]
+        //public async Task<IActionResult> GetProducts(string order, SearchParams searchParams)
+        //{
+        //    var result = await _customerSearchService.GetProductsAsync(order, searchParams);
+        //    if (result.HasError())
+        //    {
+        //        foreach (var error in result.GetResult().GetErrors())
+        //        {
+        //            ModelState.AddModelError(error.Code, error.Message);
+        //        }
 
-                return new ValidationFailedResult(ModelState);
-            }
+        //        return new ValidationFailedResult(ModelState);
+        //    }
 
-            return Ok(result.GetData());
-        }
+        //    return Ok(result.GetData());
+        //}
 
         [HttpGet("products/{id}")]
         public async Task<IActionResult> GetProduct(long id)
@@ -51,22 +51,22 @@ namespace Aufnet.Backend.Api.Controllers.Customer
             return Ok(result.GetData());
         }
 
-        [HttpGet("merchants/{order}")]
-        public async Task<IActionResult> GetMerchants(string order, SearchParams searchParams)
-        {
-            var result = await _customerSearchService.GetMerchantsAsync(order, searchParams);
-            if (result.HasError())
-            {
-                foreach (var error in result.GetResult().GetErrors())
-                {
-                    ModelState.AddModelError(error.Code, error.Message);
-                }
+        //[HttpGet("merchants/{order}")]
+        //public async Task<IActionResult> GetMerchants(string order, SearchParams searchParams)
+        //{
+        //    var result = await _customerSearchService.GetMerchantsAsync(order, searchParams);
+        //    if (result.HasError())
+        //    {
+        //        foreach (var error in result.GetResult().GetErrors())
+        //        {
+        //            ModelState.AddModelError(error.Code, error.Message);
+        //        }
 
-                return new ValidationFailedResult(ModelState);
-            }
+        //        return new ValidationFailedResult(ModelState);
+        //    }
 
-            return Ok(result.GetData());
-        }
+        //    return Ok(result.GetData());
+        //}
 
         [HttpGet("merchants/{id}")]
         public async Task<IActionResult> GetMerchant(long id)
@@ -190,7 +190,7 @@ namespace Aufnet.Backend.Api.Controllers.Customer
         [HttpGet("")]
         public async Task<IActionResult> SearchProduct(string term, SearchParams searchParams )
         {
-            var result = await _customerSearchService.SearchProductsAsync(searchParams);
+            var result = await _customerSearchService.SearchProductsAsync(term, searchParams);
             if (result.HasError())
             {
                 foreach (var error in result.GetResult().GetErrors())

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aufnet.Backend.Api.Controllers.Admin.Configs
 {
-    [Route("api/adm/configs/[controller]")]
+    [Route("api/adm/configs/categories")]
     public class CategoryController : BaseController
     {
         private IAdminConfigsCategoryService _adminService;
@@ -34,10 +34,10 @@ namespace Aufnet.Backend.Api.Controllers.Admin.Configs
             return Ok(result.GetExteraData());
         }
 
-        [HttpPost("upload/{id}")]
+        [HttpPost("{id}/upload")]
         public async Task<IActionResult> AddCategoryImage(long id, IFormFile file)
         {
-            var result = await _adminService.SaveImageAsync(id, file);
+            var result = await _adminService.AddOrUpdateCategoryImageAsync(id, file);
 
             if (result.HasError())
             {
@@ -51,8 +51,8 @@ namespace Aufnet.Backend.Api.Controllers.Admin.Configs
             return Ok(result.GetExteraData());
         }
 
-        [HttpGet("{parentId}")]
-        public async Task<IActionResult> GetAll(long? parentId)
+        [HttpGet("{parentId}/subcategories")]
+        public async Task<IActionResult> GetAll(long parentId)
         {
             var result = await _adminService.GetCategoriesAsync(parentId);
 
@@ -65,7 +65,8 @@ namespace Aufnet.Backend.Api.Controllers.Admin.Configs
 
                 return new ValidationFailedResult(ModelState);
             }
-            return Ok(result.GetData());
+
+            return Ok(new { data = result.GetData() });
         }
 
         [HttpGet("{id}")]
@@ -104,7 +105,7 @@ namespace Aufnet.Backend.Api.Controllers.Admin.Configs
         [HttpPut("{id}/image")]
         public async Task<IActionResult> UpdateImage( long id, IFormFile file )
         {
-            var result = await _adminService.UpdateCategoryImageAsync(id, file);
+            var result = await _adminService.AddOrUpdateCategoryImageAsync(id, file);
 
             if (result.HasError())
             {
@@ -120,7 +121,7 @@ namespace Aufnet.Backend.Api.Controllers.Admin.Configs
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var result = await _adminService.DeleteCategoryImageAsync(id);
+            var result = await _adminService.DeleteCategoryAsync(id);
 
             if (result.HasError())
             {

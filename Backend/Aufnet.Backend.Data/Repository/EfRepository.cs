@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Aufnet.Backend.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Aufnet.Backend.Data.Models;
@@ -20,7 +22,7 @@ namespace Aufnet.Backend.Data.Repository
         //private readonly ILog _logger = LogManager.GetLogger("EntityFrameWork");
 
 
-        public EfRepository(Microsoft.EntityFrameworkCore.DbContext context)
+        public EfRepository(ApplicationDbContext context)
         {
             this.DbContext = context;
 
@@ -106,9 +108,9 @@ namespace Aufnet.Backend.Data.Repository
             }
         }
 
-        public virtual T GetById(long id)
+        public virtual async Task<T> GetByIdAsync(long id)
         {
-            return Query().First(x => x.Id == id);
+            return await Query().FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public T FindOne(Expression<Func<T, bool>> query)
@@ -121,7 +123,7 @@ namespace Aufnet.Backend.Data.Repository
             return Query(query).ToList();
         }
 
-        public virtual void Add(T entity)
+        public virtual async Task<int> AddAsync(T entity)
         {
             //var identityName = Thread.CurrentPrincipal.Identity.Name;
             entity.CreatedAt = DateTime.Now;
@@ -138,10 +140,10 @@ namespace Aufnet.Backend.Data.Repository
                 DbSet.Add(entity);
             }
 
-            SaveChanges();
+            return await SaveChangesAsync();
         }
 
-        public virtual void Update(T entity)
+        public virtual async Task<int> UpdateAsync(T entity)
         {
             //var identityName = Thread.CurrentPrincipal.Identity.Name;
             entity.LastUpdatedAt = DateTime.Now;
@@ -154,10 +156,10 @@ namespace Aufnet.Backend.Data.Repository
             dbEntityEntry.State = EntityState.Modified;
             dbEntityEntry.Property(x => x.CreatedAt).IsModified = false;
 
-            SaveChanges();
+            return await SaveChangesAsync() ;
         }
 
-        public virtual void Delete(T entity)
+        public virtual async Task<int> DeleteAsync(T entity)
         {
             EntityEntry dbEntityEntry = DbContext.Entry(entity);
             if (dbEntityEntry.State != EntityState.Deleted)
@@ -170,27 +172,27 @@ namespace Aufnet.Backend.Data.Repository
                 DbSet.Remove(entity);
             }
 
-            SaveChanges();
+            return await SaveChangesAsync();
         }
 
-        public virtual void Delete(int id)
+        public virtual async Task<int> DeleteAsync(long id)
         {
-            var entity = GetById(id);
-            if (entity == null) return; // not found; assume already deleted.
-            Delete(entity);
+            var entity = await GetByIdAsync(id);
+            if (entity == null) return 0; // not found; assume already deleted.
+            return await DeleteAsync( entity);
         }
 
-        public void AddOrUpdate(T entity)
+        public async Task<int> AddOrUpdateAsync(T entity)
         {
             if (entity.IsNew())
-                Add(entity);
+                return await AddAsync(entity);
             else
             {
-                Update(entity);
+                return await  UpdateAsync(entity);
             }
         }
 
-        public void Archive(T entity)
+        public async Task<int> ArchiveAsync(T entity)
         {
             entity.IsArchived = true;
             var dbEntityEntry = DbContext.Entry(entity);
@@ -200,13 +202,13 @@ namespace Aufnet.Backend.Data.Repository
             }
             dbEntityEntry.Property(x => x.IsArchived).IsModified = true;
 
-            SaveChanges();
+            return await SaveChangesAsync();
         }
 
-        public void Archive(int id)
+        public async Task<int> ArchiveAsync(long id)
         {
-            var entity = GetById(id);
-            Archive(entity);
+            var entity = await GetByIdAsync(id);
+            return await ArchiveAsync(entity);
         }
 
         public void StartUnitOfWork()
@@ -220,24 +222,11 @@ namespace Aufnet.Backend.Data.Repository
         }
 
         // todo: need to get rid of this method as its the unitofwork that should take care of this thing
-        private void SaveChanges()
+        private async Task<int> SaveChangesAsync()
         {
-            try
-            {
-                DbContext.SaveChanges();
-            }
-
-            catch (DbUpdateException dbex)
-            {
-                //_logger.ErrorFormat("Exception occured when trying to save the changes " + dbex.Message);
-
-            }
-
-            //commented out this code as this is a fatal error and should be picked up by global exception handler
-            //catch (Exception ex)
-            //{
-            //    _logger.ErrorFormat("Other Exception occured when trying to save changes the DB: " + ex.Message);            
-            //}
+            
+                return await DbContext.SaveChangesAsync();
+            
 
         }
 

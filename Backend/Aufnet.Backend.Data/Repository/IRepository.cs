@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Aufnet.Backend.Data.Models;
 
 #endregion REFERENCES
@@ -25,17 +26,20 @@ namespace Aufnet.Backend.Data.Repository
         IPagedList<TEntity> GetPaged(int pageIndex, int pageItems, Expression<Func<TEntity, bool>> predicate,
             SortOptions sortOptions = null);
 
-        TEntity GetById(long id);
+        Task<TEntity> GetByIdAsync(long id);
         TEntity FindOne(Expression<Func<TEntity, bool>> query);
         IList<TEntity> Find(Expression<Func<TEntity, bool>> query);
-        void Add(TEntity entity);
-        void Update(TEntity entity);
-        void Delete(TEntity entity);
-        void Delete(int id);
-        void AddOrUpdate(TEntity entity);
 
-        void Archive(TEntity entity);
-        void Archive(int id);
+        Task<int> AddAsync(TEntity entity);
+        Task<int> UpdateAsync(TEntity entity);
+        Task<int> AddOrUpdateAsync( TEntity entity );
+
+        Task<int> DeleteAsync( TEntity entity);
+        Task<int> DeleteAsync( long id);
+
+
+        Task<int> ArchiveAsync(TEntity entity);
+        Task<int> ArchiveAsync( long id);
 
 
         //Unit of Work

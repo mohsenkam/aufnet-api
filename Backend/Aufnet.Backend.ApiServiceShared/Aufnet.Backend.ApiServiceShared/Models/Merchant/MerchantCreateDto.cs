@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using Aufnet.Backend.Data.Models.Entities.Shared;
 
@@ -21,17 +22,19 @@ namespace Aufnet.Backend.ApiServiceShared.Models.Merchant
 
         [Required]
         public string Abn { get; set; }
+
+        [DataType(DataType.Date)]
         [Required]
-        public string ContractStartDate { get; set; }
+        public DateTime ContractStartDate { get; set; }
 
         [Required]
         public Address Address { get; set; }
 
         [Required]
-        public string Category { get; set; }
-        [Required]
-        public string SubCategory { get; set; }
+        public long CategoryId { get; set; }
 
-        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //[Required]
+        //public string SubCategory { get; set; }
+
     }
 }

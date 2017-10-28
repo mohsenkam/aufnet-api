@@ -27,5 +27,8 @@ namespace Aufnet.Backend.Data.Models.Entities.Shared
         [Required]
         public string Raw { get; set; }
 
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+
     }
 }

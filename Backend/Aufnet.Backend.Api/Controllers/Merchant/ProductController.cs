@@ -2,7 +2,7 @@
 using Aufnet.Backend.Api.Validation;
 using Aufnet.Backend.ApiServiceShared.Models.Merchant;
 using Aufnet.Backend.Services;
-using Aufnet.Backend.Services.Merchant;
+using Aufnet.Backend.Services.Merchants;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aufnet.Backend.Api.Controllers.Merchant
@@ -37,7 +37,7 @@ namespace Aufnet.Backend.Api.Controllers.Merchant
 
         // POST api/merchants/john/products
         [HttpPost]
-        public async Task<IActionResult> Post(string username, [FromBody]MerchantProductDto value)
+        public async Task<IActionResult> Post(string username, [FromBody]CreateProductDto value)
         {
             var result = await _merchantProductService.CreateProduct(username, value);
             if (result.HasError())
@@ -52,11 +52,11 @@ namespace Aufnet.Backend.Api.Controllers.Merchant
             return Ok();
         }
 
-        // PUT api/merchants/john/products
-        [HttpPut]
-        public async Task<IActionResult> Put(string username, [FromBody]MerchantProductDto value)
+        // PUT api/merchants/john/products/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(string username, long id, [FromBody]ProductUpdateDto value)
         {
-            var result = await _merchantProductService.UpdateProduct(username, value);
+            var result = await _merchantProductService.UpdateProductDetails(username, id,  value);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
@@ -72,7 +72,7 @@ namespace Aufnet.Backend.Api.Controllers.Merchant
         [HttpDelete]
         public async Task<IActionResult> Delete(string username, long productId)
         {
-            var result = await _merchantProductService.DelteProduct(username, productId);
+            var result = await _merchantProductService.DeleteProduct(username, productId);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())

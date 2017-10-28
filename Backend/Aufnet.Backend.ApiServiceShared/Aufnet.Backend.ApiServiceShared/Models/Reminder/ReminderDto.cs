@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Numerics;
-using Aufnet.Backend.Data.Models.Entities.Merchant;
+using Aufnet.Backend.Data.Models.Entities.Merchants;
 
 namespace Aufnet.Backend.ApiServiceShared.Models.Reminder
 {
@@ -8,6 +8,6 @@ namespace Aufnet.Backend.ApiServiceShared.Models.Reminder
     {
         public int Id { get; set; }
         public DateTime TrigerDateTime { get; set; }
-        public MerchantEvent Event { get; set; }
+        public ItemBasedOffer Event { get; set; }
     }
 }

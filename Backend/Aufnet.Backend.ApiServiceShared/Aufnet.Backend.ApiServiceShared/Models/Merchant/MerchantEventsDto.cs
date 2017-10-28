@@ -12,6 +12,6 @@ namespace Aufnet.Backend.ApiServiceShared.Models.Merchant
         public DateTime EndDate { get; set; }
         public string MerchantUserName { get; set; }
 
-        public virtual MerchantProductDto MerchantProductDto { get; set; }
+        public virtual CreateProductDto CreateProductDto { get; set; }
     }
 }

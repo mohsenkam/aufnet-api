@@ -4,7 +4,7 @@
     {
         public long MerchantId { get; set; }
         public string MerchantName { get; set; }
-        public long CategoryId { get; set; }
-        public string CategoryName { get; set; }
+        public string Logo { get; set; }
+        public string Address { get; set; }
     }
 }

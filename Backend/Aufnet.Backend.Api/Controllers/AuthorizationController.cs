@@ -122,7 +122,7 @@ namespace Aufnet.Backend.Api.Controllers
 
             // Create a new authentication ticket holding the user identity.
             var ticket = new AuthenticationTicket(principal,
-                new AuthenticationProperties(),
+                new Microsoft.AspNetCore.Authentication.AuthenticationProperties(),
                 OpenIdConnectServerDefaults.AuthenticationScheme);
 
             // Set the list of scopes granted to the client application.

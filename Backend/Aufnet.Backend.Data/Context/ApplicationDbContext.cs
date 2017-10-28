@@ -1,13 +1,12 @@
-﻿using Aufnet.Backend.Data.Models.Entities.Admin;
-using Aufnet.Backend.Data.Models.Entities.Customer;
+﻿using Aufnet.Backend.Data.Models.Entities.Customers;
 using Aufnet.Backend.Data.Models.Entities.Identity;
-using Aufnet.Backend.Data.Models.Entities.Merchant;
-using Aufnet.Backend.Data.Models.Entities.Reminder;
+using Aufnet.Backend.Data.Models.Entities.Merchants;
 using Aufnet.Backend.Data.Models.Entities.Shared;
-using Aufnet.Backend.Data.Models.Entities.Transaction;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Aufnet.Backend.Data.Context
 {
@@ -18,9 +17,30 @@ namespace Aufnet.Backend.Data.Context
         {
         }
 
+        public ApplicationDbContext() // For the sake of unit tests
+        {
+            
+        }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<ProductTransaction>()
+                .HasKey(pt => new
+                {
+                    pt.ProductId, pt.TransactionId
+                });
+            builder.Entity<ProductTransaction>()
+                .HasOne(pt => pt.Product)
+                .WithMany(p => p.ProductTransactionst)
+                .HasForeignKey(pt => pt.ProductId);
+
+            builder.Entity<ProductTransaction>()
+                .HasOne(pt => pt.Transaction)
+                .WithMany(t => t.ProductTransactionst)
+                .HasForeignKey(pt => pt.TransactionId);
+
+            
+
             //builder.Entity<IdentityRole>().Property(r => r.Id).HasMaxLength(256);
             //builder.Entity<IdentityRole>().Property(r => r.Name).IsRequired();
             //builder.Entity<IdentityUserToken<string>>(entity => entity.Property(m => m.UserId).HasMaxLength(256).IsRequired());
@@ -33,20 +53,66 @@ namespace Aufnet.Backend.Data.Context
         }
 
         public DbSet<CustomerProfile> CustomerProfiles { get; set; }
-        public DbSet<BookmarkedMerchantEvent> BookmarkedMerchantEvents { get; set; }
+        //public DbSet<BookmarkedMerchantEvent> BookmarkedMerchantEvents { get; set; }
 
-        public DbSet<MerchantContract> MerchantContracts { get; set; }
+        public DbSet<Contract> Contracts { get; set; }
         public DbSet<MerchantProfile> MerchantProfiles { get; set; }
         public DbSet<Address> Addresses { get; set; }
-        public DbSet<MerchantProduct> Products { get; set; }
-        public DbSet<MerchantEvent> MerchantEvents { get; set; }
-        public DbSet<Region> Regions { get; set; }
-        public DbSet<Point> Points { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductTransaction> ProductTransactions { get; set; }
+        public DbSet<ItemBasedOffer> ItemBasedOffers { get; set; }
+        //public DbSet<Region> Regions { get; set; }
+        public DbSet<Merchant> Merchants { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<Reminder> Reminders { get; set; }
+        //public DbSet<Reminder> Reminders { get; set; }
         public DbSet<Category> Categories { get; set; }
 
+        public void Seed( IApplicationBuilder app )
+        {
+            // Get an instance of the DbContext from the DI container
+            using (var context = app.ApplicationServices.GetRequiredService<ApplicationDbContext>())
+            {
+                context.Categories.Add(new Category()
+                {
+                    Id = 1,
+                    ImageUrl = "Cat1Url",
+                    DisplayName = "Cat1",
+                    ParentId = -1
+                });
+                context.Categories.Add(new Category()
+                {
+                    Id = 2,
+                    ImageUrl = "Cat2Url",
+                    DisplayName = "Cat2",
+                    ParentId = -1
+                });
+                context.Categories.Add(new Category()
+                {
+                    Id = 11,
+                    ImageUrl = "Cat11Url",
+                    DisplayName = "Cat11",
+                    ParentId = 1
+                });
+                context.Categories.Add(new Category()
+                {
+                    Id = 21,
+                    ImageUrl = "Cat21Url",
+                    DisplayName = "Cat21",
+                    ParentId = 2
+                });
+                context.Categories.Add(new Category()
+                {
+                    Id = 22,
+                    ImageUrl = "Cat22Url",
+                    DisplayName = "Cat22",
+                    ParentId = 2
+                });
+                context.SaveChanges();
+            }
+        }
+
     }
+
 
     //public class ApplicationDbContextFactory : IDbContextFactory<ApplicationDbContext>
     //{

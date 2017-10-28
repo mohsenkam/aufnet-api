@@ -8,8 +8,12 @@ using System.Threading.Tasks;
 using AspNet.Security.OpenIdConnect.Primitives;
 using Aufnet.Backend.ApiServiceShared.Models;
 using Aufnet.Backend.ApiServiceShared.Models.Shared;
+using Aufnet.Backend.Data.Repository;
 using Aufnet.Backend.Services;
-using Aufnet.Backend.Services.Merchant;
+using Aufnet.Backend.Services.Admin.Configs;
+using Aufnet.Backend.Services.Admin.Merchants;
+using Aufnet.Backend.Services.Customers;
+using Aufnet.Backend.Services.Merchants;
 using Aufnet.Backend.Services.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -69,14 +73,15 @@ namespace Aufnet.Backend.Api
             // Add framework services.
             services.AddMvc();
             services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseMySql(Configuration["ConnectionStrings:AufnetDB"]);
-                //options.UseSqlServer(Configuration["ConnectionStrings:AufnetDB"]);
-                // Register the entity sets needed by OpenIddict.
-                // Note: use the generic overload if you need
-                // to replace the default OpenIddict entities.
-                options.UseOpenIddict();
-            });
+                {
+                    options.UseMySql(Configuration["ConnectionStrings:AufnetDB"]);
+                    //options.UseSqlServer(Configuration["ConnectionStrings:AufnetDB"]);
+                    // Register the entity sets needed by OpenIddict.
+                    // Note: use the generic overload if you need
+                    // to replace the default OpenIddict entities.
+                    options.UseOpenIddict();
+                })
+                .AddScoped<ApplicationDbContext>();
 
             // Add Identity services to the services container.
             // Register the Identity services.
@@ -143,25 +148,20 @@ namespace Aufnet.Backend.Api
 
 
             //app services
-            services.AddScoped<ICustomerService, CustomersService>();
-            services.AddScoped<IMerchantService, MerchantService>();
-            services.AddScoped<ICustomerProfileService, CustomerProfilesService>();
-            services.AddScoped<IMerchantProfileService, MerchantProfilesService>();
-            services.AddScoped<IEmailService, SendGridEmailService>();
-            services.AddScoped<IMerchantEventsService, MerchantEventsService>();
-            services.AddScoped<IMerchantProductService, MerchantProductService>();
-            services.AddScoped<IRegionService, RegionService>();
-            services.AddScoped<ITransactionService, TransactionService>();
-            services.AddScoped<IReminderService, ReminderService>();
-            //services.AddScoped<IMessagingService, MessagingService>();
-            //services.AddTransient<IDscProcessorService, DscProcessorService>();
-            //services.AddTransient<IStaffService, StaffService>();
-            //services.AddTransient<ISftpService, SftpService>();
-            //services.AddTransient<IMailer, SendGridMailer>();
-            //services.AddTransient<EndOfShiftFileWriteJob>();
-            //services.AddTransient<DscDownloadJob>();
+            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+            services.AddScoped<IFileManager, LocalFileManager>();
+            services.AddScoped<IAdminConfigsCategoryService, AdminConfigsCategoryService>();
+            services.AddScoped<IAdminContractService, AdminContractService>();
 
-            //services.AddTransient<IEmailSender, AuthMessageSender>();
+            services.AddScoped<ICustomerUserService, CustomerUserService>();
+            services.AddScoped<IMerchantContractService, MerchantContractService>();
+            services.AddScoped<ICustomerProfileService, CustomerProfilesService>();
+            services.AddScoped<IEmailService, SendGridEmailService>();
+            services.AddScoped<IMerchantProductService, MerchantProductService>();
+            //services.AddScoped<IMerchantTransactionService, IMerchantTransactionService>();
+
+            //services.AddScoped<IRegionService, RegionService>();
+            //services.AddScoped<IReminderService, ReminderService>();
 
             //Configuration service and options
             services.AddSingleton<IConfiguration>(Configuration);
@@ -228,13 +228,14 @@ namespace Aufnet.Backend.Api
             //OAuth
             // Register the validation middleware, that is used to decrypt
             // the access tokens and populate the HttpContext.User property.
-            app.UseOAuthValidation();
+            app.UseAuthentication();
             // Register the OpenIddict middleware.
-            app.UseOpenIddict();
+            //app.UseOpenIddict();
             app.UseMvcWithDefaultRoute();
 
             app.UseMvc(routes => routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}"));
-            
+
+            dbContext.Seed(app);
 
             //todo: remove test code
             //var dscSvc = app.ApplicationServices.GetRequiredService<IDscProcessorService>();

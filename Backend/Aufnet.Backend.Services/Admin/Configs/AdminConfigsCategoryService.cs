@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Aufnet.Backend.ApiServiceShared.Models.Admin;
 using Aufnet.Backend.ApiServiceShared.Shared;
-using Aufnet.Backend.Data.Context;
-using Aufnet.Backend.Data.Models.Entities.Admin;
+using Aufnet.Backend.Data.Models.Entities.Shared;
+using Aufnet.Backend.Data.Repository;
+using Aufnet.Backend.Services.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,11 +16,13 @@ namespace Aufnet.Backend.Services.Admin.Configs
 {
     public class AdminConfigsCategoryService : IAdminConfigsCategoryService
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IRepository<Category> _catRepository;
+        private readonly IFileManager _fileManager;
 
-        public AdminConfigsCategoryService(ApplicationDbContext dbContext)
+        public AdminConfigsCategoryService(IRepository<Category> catRepository, IFileManager fileManager)
         {
-            _dbContext = dbContext;
+            _catRepository = catRepository;
+            _fileManager = fileManager;
         }
 
         public async Task<IGetServiceResult<List<CategoryDto>>> GetCategoriesAsync(long? parentId)
@@ -28,21 +32,37 @@ namespace Aufnet.Backend.Services.Admin.Configs
 
             try
             {
-                var categories = await _dbContext.Categories.Where(c => c.ParentCategory.Id == parentId)
-                    .Select(c => new CategoryDto()
+
+                var categories = _catRepository.Query();
+                var selfJoin = from c1 in categories
+                    join c2 in categories
+                    on c1.Id equals c2.ParentId into gj
+                    from subCat in gj.DefaultIfEmpty()
+                    select new
                     {
-                        DisplayName = c.DisplayName,
-                        ImageUrl = c.ImageUrl,
-                        ParentId = c.ParentCategory.Id
-                    })
-                    .ToListAsync();
-                getResult.SetData(categories);
+                        Id = c1.Id,
+                        DisplayName = c1.DisplayName,
+                        ImageUrl = c1.ImageUrl,
+                        ChildId = subCat != null ? subCat.Id : (long?) null,
+                    };
+
+                var grouped = from category in selfJoin
+                    group category by new { category.Id, category.DisplayName, category.ImageUrl}
+                    into gc
+                    select new CategoryDto()
+                    {
+                        Id = gc.Key.Id,
+                        DisplayName = gc.Key.DisplayName,
+                        ImageUrl = gc.Key.ImageUrl,
+                        SubCategories = gc.Select(g => g.ChildId).ToArray()
+                    };
+                getResult.SetData(grouped.ToList());
                 return getResult;
 
             }
             catch (Exception ex)
             {
-                // log ex
+                // todo: log ex
                 serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.OperationFailed.Code,
                     ErrorCodesConstants.OperationFailed.Message));
                 getResult.SetResult(serviceResult);
@@ -57,7 +77,7 @@ namespace Aufnet.Backend.Services.Admin.Configs
 
             try
             {
-                var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
+                var category = await _catRepository.GetByIdAsync(id);
                 if (category == null) 
                 {
                     serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.EntityNotFound.Code,
@@ -70,7 +90,7 @@ namespace Aufnet.Backend.Services.Admin.Configs
                     {
                         DisplayName = category.DisplayName,
                         ImageUrl = category.ImageUrl,
-                        ParentId = category.ParentCategory.Id
+                        Id = category.Id
                     });
                 }
                 return getResult;
@@ -91,11 +111,11 @@ namespace Aufnet.Backend.Services.Admin.Configs
             var serviceResult = new ServiceResult();
 
             Category parent = null;
-            if (value.ParentId != null)
+            if (value.ParentId != -1) // The root level is assumed to have the Id of -1
             {
                 try
                 {
-                    parent = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == value.ParentId);
+                    parent = await _catRepository.GetByIdAsync(value.ParentId.Value);
                     if (parent == null) //Parent is set to an invalid entity
                     {
                         serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.InvalidOperation.Code,
@@ -113,13 +133,15 @@ namespace Aufnet.Backend.Services.Admin.Configs
 
             try
             {
-                await _dbContext.Categories.AddAsync(new Category()
+                var category = new Category()
                 {
-                    ParentCategory = parent,
+                    ParentId = parent.Id,
                     DisplayName = value.DisplayName
-                });
+                };
+                await _catRepository.AddAsync(category);
+                serviceResult.SetExteraData(new { category.Id }); // todo: Does it work??
 
-                await _dbContext.SaveChangesAsync();
+
             }
             catch (Exception ex)
             {
@@ -130,7 +152,8 @@ namespace Aufnet.Backend.Services.Admin.Configs
             return serviceResult;
         }
 
-        public async Task<IServiceResult> SaveImageAsync(long id, IFormFile file)
+
+        public async Task<IServiceResult> AddOrUpdateCategoryImageAsync( long id, IFormFile file )
         {
             var serviceResult = new ServiceResult();
 
@@ -138,8 +161,7 @@ namespace Aufnet.Backend.Services.Admin.Configs
             try
             {
 
-                var category =
-                    await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
+                var category = await _catRepository.GetByIdAsync(id);
                 if (category == null) // Validation
                 {
                     serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
@@ -147,56 +169,14 @@ namespace Aufnet.Backend.Services.Admin.Configs
                     return serviceResult;
                 }
 
-                // Read (upload) the file
-                var filePath = Path.GetTempFileName();
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-                category.ImageUrl = filePath;
-                _dbContext.Categories.Update(category);
-                await _dbContext.SaveChangesAsync();
-                serviceResult.SetExteraData(new { file = file.FileName, size = file.Length });
-                return serviceResult;
-            }
-            catch (Exception ex)
-            {
-                // todo: log the exception
-
-                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.OperationFailed.Code,
-                    ErrorCodesConstants.OperationFailed.Message));
-                return serviceResult;
-            }
-        }
-
-        public async Task<IServiceResult> UpdateCategoryImageAsync( long id, IFormFile file )
-        {
-            var serviceResult = new ServiceResult();
-
-            // Check if the category exists
-            try
-            {
-
-                var category =
-                    await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
-                if (category == null) // Validation
-                {
-                    serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
-                        ErrorCodesConstants.ManipulatingMissingEntity.Message));
-                    return serviceResult;
-                }
+                var oldFileUrl = category.ImageUrl;
 
                 // Read (upload) the file
-                var filePath = Path.GetTempFileName();
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-                category.ImageUrl = filePath;
-                _dbContext.Categories.Update(category);
-                await _dbContext.SaveChangesAsync();
+                category.ImageUrl = await _fileManager.StoreFile(file);
+                await _catRepository.UpdateAsync(category);
 
-                // TODO: Delete the old image (if exists) after the successful upload of the new image
+                if (oldFileUrl != null)
+                    await _fileManager.DeleteFile(oldFileUrl);
 
                 serviceResult.SetExteraData(new { file = file.FileName, size = file.Length });
                 return serviceResult;
@@ -217,7 +197,7 @@ namespace Aufnet.Backend.Services.Admin.Configs
 
             try
             {
-                var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
+                var category = await _catRepository.GetByIdAsync(id);
                 if (category == null) // Validation
                 {
                     serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
@@ -226,11 +206,9 @@ namespace Aufnet.Backend.Services.Admin.Configs
                 else
                 {
                     category.DisplayName = newDisplayName;
-                    _dbContext.Categories.Update(category);
-                    await _dbContext.SaveChangesAsync();
+                    await _catRepository.UpdateAsync(category);
                 }
                 return serviceResult;
-
             }
             catch (Exception ex)
             {
@@ -241,13 +219,13 @@ namespace Aufnet.Backend.Services.Admin.Configs
             }
         }
 
-        public async Task<IServiceResult> DeleteCategoryImageAsync(long id)
+        public async Task<IServiceResult> DeleteCategoryAsync(long id)
         {
             var serviceResult = new ServiceResult();
 
             try
             {
-                var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
+                var category = await _catRepository.GetByIdAsync(id);
                 if (category == null) // Validation
                 {
                     serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.ManipulatingMissingEntity.Code,
@@ -256,7 +234,7 @@ namespace Aufnet.Backend.Services.Admin.Configs
                 else
                 {
                     var hasActiveChild =
-                        await _dbContext.Categories.AnyAsync(c => c.ParentCategory.Id == id && !c.IsArchived);
+                        _catRepository.Query(c => c.ParentId == id).Any();
 
                     if (hasActiveChild) // Cannot delete
                     {
@@ -265,9 +243,7 @@ namespace Aufnet.Backend.Services.Admin.Configs
                         return serviceResult;
                     }
 
-                    category.IsArchived = true; // Logical delete
-                    _dbContext.Categories.Update(category);
-                    await _dbContext.SaveChangesAsync();
+                    await _catRepository.ArchiveAsync(category); // Archive instead of Delete
                 }
                 return serviceResult;
 

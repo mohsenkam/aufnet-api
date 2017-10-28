@@ -1,8 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\Customer\CustomerCalendarDto.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="Models\Merchant\MerchantContractSummaryDto.cs" />

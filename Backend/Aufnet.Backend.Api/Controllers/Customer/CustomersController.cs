@@ -5,6 +5,7 @@ using Aufnet.Backend.ApiServiceShared.Models.Customer;
 using Aufnet.Backend.ApiServiceShared.Models.Shared;
 using Aufnet.Backend.Data.Models.Entities.Identity;
 using Aufnet.Backend.Services;
+using Aufnet.Backend.Services.Customers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,12 +17,12 @@ namespace Aufnet.Backend.Api.Controllers.Customer
     public class CustomersController: BaseController
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ICustomerService _customerService;
+        private readonly ICustomerUserService _customerUserService;
 
-        public CustomersController(UserManager<ApplicationUser> userManager, ICustomerService customerService)
+        public CustomersController(UserManager<ApplicationUser> userManager, ICustomerUserService customerUserService)
         {
             _userManager = userManager;
-            _customerService = customerService;
+            _customerUserService = customerUserService;
         }
 
         //POST api/customers
@@ -30,7 +31,7 @@ namespace Aufnet.Backend.Api.Controllers.Customer
         [AllowAnonymous]
         public async Task<IActionResult> Post([FromBody]CustomerSignUpDto value)
         {
-            var result=await _customerService.SignUpAsync(value);
+            var result=await _customerUserService.SignUpAsync(value);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
@@ -48,7 +49,7 @@ namespace Aufnet.Backend.Api.Controllers.Customer
         [ValidateModel]
         public async Task<IActionResult> ConfirmEmail([FromBody]ConfirmEmailDto value )
         {
-            var result = await _customerService.ConfirmEmailAsync(value);
+            var result = await _customerUserService.ConfirmEmailAsync(value);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
@@ -67,7 +68,7 @@ namespace Aufnet.Backend.Api.Controllers.Customer
         [ValidateModel]
         public async Task<IActionResult> UpdatePassword(string username, [FromBody]CustomerChangePasswordDto value)
         {
-            var result = await _customerService.ChangePasswordAsync(username, value);
+            var result = await _customerUserService.ChangePasswordAsync(username, value);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())
@@ -84,7 +85,7 @@ namespace Aufnet.Backend.Api.Controllers.Customer
         [HttpDelete("{username}")]
         public async Task<IActionResult> Delete(string username)
         {
-            var result = await _customerService.DeleteAsync(username);
+            var result = await _customerUserService.DeleteAsync(username);
             if (result.HasError())
             {
                 foreach (var error in result.GetErrors())

@@ -1,19 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\Entities\Reminder\**" />
+    <EmbeddedResource Remove="Models\Entities\Reminder\**" />
+    <None Remove="Models\Entities\Reminder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\Entities\Customers\BookmarkedMerchantEvent.cs" />
+    <Compile Remove="Models\Entities\Shared\Region.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Models\Entities\Identity\" />
     <Folder Include="Context\" />
+    <Folder Include="Models\Entities\Transaction\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="1.1.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="1.1.1" />
-    <PackageReference Include="ZXing.Net" Version="0.15.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="2.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" />
+    <PackageReference Include="ZXing.Net" Version="0.16.2" />
   </ItemGroup>
 
 </Project>
