@@ -75,37 +75,43 @@ namespace Aufnet.Backend.Data.Context
                 context.Categories.Add(new Category()
                 {
                     Id = 1,
-                    ImageUrl = "Cat1Url",
-                    DisplayName = "Cat1",
-                    ParentId = -1
+                    ImageUrl = "",
+                    DisplayName = "root",
                 });
                 context.Categories.Add(new Category()
                 {
                     Id = 2,
-                    ImageUrl = "Cat2Url",
-                    DisplayName = "Cat2",
-                    ParentId = -1
+                    ImageUrl = "Cat1Url",
+                    DisplayName = "Cat1",
+                    ParentId = 1
                 });
                 context.Categories.Add(new Category()
                 {
-                    Id = 11,
-                    ImageUrl = "Cat11Url",
-                    DisplayName = "Cat11",
+                    Id = 3,
+                    ImageUrl = "Cat2Url",
+                    DisplayName = "Cat2",
                     ParentId = 1
                 });
                 context.Categories.Add(new Category()
                 {
                     Id = 21,
-                    ImageUrl = "Cat21Url",
-                    DisplayName = "Cat21",
+                    ImageUrl = "Cat11Url",
+                    DisplayName = "Cat11",
                     ParentId = 2
                 });
                 context.Categories.Add(new Category()
                 {
-                    Id = 22,
+                    Id = 31,
+                    ImageUrl = "Cat21Url",
+                    DisplayName = "Cat21",
+                    ParentId = 3
+                });
+                context.Categories.Add(new Category()
+                {
+                    Id = 32,
                     ImageUrl = "Cat22Url",
                     DisplayName = "Cat22",
-                    ParentId = 2
+                    ParentId = 3
                 });
                 context.SaveChanges();
             }

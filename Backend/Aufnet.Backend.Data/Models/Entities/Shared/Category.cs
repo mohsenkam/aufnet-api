@@ -8,6 +8,6 @@ namespace Aufnet.Backend.Data.Models.Entities.Shared
         public string DisplayName { get; set; }
         public string ImageUrl { get; set; }
         public virtual List<Product> Products { get; set; }
-        public long ParentId { get; set; }
+        public long? ParentId { get; set; }
     }
 }
