@@ -87,9 +87,9 @@ namespace Aufnet.Backend.Api.Controllers.Admin.Configs
         }
 
         [HttpPut("{id}/displayname")]
-        public async Task<IActionResult> UpdateDisplayName(long id, string newDisplayName)
+        public async Task<IActionResult> UpdateDisplayName(long id, [FromBody] UpdateCategoryDto updateCategoryDto )
         {
-            var result = await _adminService.UpdateCategoryDisplayNameAsync(id, newDisplayName);
+            var result = await _adminService.UpdateCategoryDisplayNameAsync(id, updateCategoryDto.NewDisplayName);
 
             if (result.HasError())
             {
