@@ -56,7 +56,7 @@ namespace Aufnet.Backend.Services.Admin.Configs
                         ImageUrl = gc.Key.ImageUrl,
                         SubCategories = gc.Select(g => g.ChildId).ToArray()
                     };
-                getResult.SetData(grouped.ToList());
+                getResult.SetData(await grouped.ToListAsync());
                 return getResult;
 
             }

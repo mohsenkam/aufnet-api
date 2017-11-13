@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -130,7 +131,7 @@ namespace Aufnet.Backend.Services.Admin.Merchants
                 {
                     Abn = contract.Abn,
                     BusinessName = contract.BusinessName,
-                    Category = contract.Category.DisplayName,
+                    CategoryName = contract.Category.DisplayName,
                     ContractStartDate = contract.ContractStartDate,
                     Address = contract.Address.Raw
                 };
@@ -141,6 +142,36 @@ namespace Aufnet.Backend.Services.Admin.Merchants
             catch (Exception ex)
             {
                 // log ex
+                serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.OperationFailed.Code,
+                    ErrorCodesConstants.OperationFailed.Message));
+                getResult.SetResult(serviceResult);
+                return getResult;
+            }
+        }
+
+        public async Task<IGetServiceResult<List<AdminContractSummaryDto>>> GetConractsAsync()
+        {
+            var serviceResult = new ServiceResult();
+            var getResult = new GetServiceResult<List<AdminContractSummaryDto>>();
+
+            try
+            {
+                var contracts = await _conRepository.Query()
+                    .Select(c => new AdminContractSummaryDto()
+                    {
+                        Abn = c.Abn,
+                        Address = c.Address.Raw,
+                        BusinessName = c.BusinessName,
+                        CategoryName = c.Category.DisplayName,
+                        ContractStartDate = c.ContractStartDate
+                    }).ToListAsync();
+                getResult.SetData(contracts);
+                return getResult;
+
+            }
+            catch (Exception ex)
+            {
+                // todo: log ex
                 serviceResult.AddError(new ErrorMessage(ErrorCodesConstants.OperationFailed.Code,
                     ErrorCodesConstants.OperationFailed.Message));
                 getResult.SetResult(serviceResult);

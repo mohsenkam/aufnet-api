@@ -6,10 +6,14 @@ namespace Aufnet.Backend.ApiServiceShared.Shared
 {
     public class PagingParams
     {
-        public int Offset { get; set; }
-        public int Count { get; set; }
+        public int Page { get; set; }
+        public int ItemsPerPage { get; set; }
 
         public bool IsValid => 
-            Offset >= 0 && Count >= 0;
+            Page >= 0 && ItemsPerPage >= 0 && ItemsPerPage <= 20; // <= 20 to stop funny things from happening
+    }
+
+    class CategoryPagingParams : PagingParams
+    {
     }
 }

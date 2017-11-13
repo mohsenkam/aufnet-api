@@ -28,6 +28,8 @@ namespace Aufnet.Backend.Services.Admin.Merchants
         /// </summary>
         /// <param name="id">Contract id</param>
         Task<IGetServiceResult<AdminContractSummaryDto>> GetContract(long id);
+
+        Task<IGetServiceResult<List<AdminContractSummaryDto>>> GetConractsAsync();
     }
 
     

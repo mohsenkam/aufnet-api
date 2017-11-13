@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aufnet.Backend.Api.Controllers.Admin.Merchants
 {
-    [Route("api/merchants")]
+    [Route("api/adm/merchants")]
     public class MerchantsContractController : BaseController
     {
         private readonly IAdminContractService _adminContractService;
@@ -25,7 +25,7 @@ namespace Aufnet.Backend.Api.Controllers.Admin.Merchants
 
 
 
-        //POST api/merchants/contract
+        //POST api/adm/merchants/contract
         [HttpPost("contract")]
         [ValidateModel]
         [AllowAnonymous]
@@ -44,7 +44,7 @@ namespace Aufnet.Backend.Api.Controllers.Admin.Merchants
             return Ok(result.GetExteraData());
         }
 
-        //POST api/merchants/{id}/contract/upload
+        //POST api/adm/merchants/{id}/contract/upload
         [HttpPost("{id}/contract/upload")]
         [AllowAnonymous]
         public async Task<IActionResult> UploadLogo( long id, IFormFile file )
@@ -61,6 +61,24 @@ namespace Aufnet.Backend.Api.Controllers.Admin.Merchants
                 return new ValidationFailedResult(ModelState);
             }
             return Ok(result.GetExteraData());
+        }
+
+        [HttpGet("contract")]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _adminContractService.GetConractsAsync();
+
+            if (result.HasError())
+            {
+                foreach (var error in result.GetResult().GetErrors())
+                {
+                    ModelState.AddModelError(error.Code, error.Message);
+                }
+
+                return new ValidationFailedResult(ModelState);
+            }
+
+            return Ok(new { data = result.GetData() });
         }
 
     }

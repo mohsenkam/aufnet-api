@@ -33,8 +33,5 @@ namespace Aufnet.Backend.ApiServiceShared.Models.Merchant
         [Required]
         public long CategoryId { get; set; }
 
-        //[Required]
-        //public string SubCategory { get; set; }
-
     }
 }
